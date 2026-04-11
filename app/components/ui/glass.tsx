@@ -28,11 +28,12 @@ export const GlassCard = ({
     ...props
 }: GlassCardProps) => {
     const baseClass = elevated ? 'glass-panel-elevated' : 'glass-panel';
+    const blurClass = elevated ? 'backdrop-blur-3xl' : 'backdrop-blur-2xl';
     const accentClass = accent ? `border-t-2 bg-gradient-to-br ${getAccentGradient(accent)}` : '';
 
     return (
         <div
-            className={`${baseClass} p-6 ${accentClass} ${className}`}
+            className={`${baseClass} ${blurClass} p-6 ${accentClass} ${className}`}
             {...props}
         >
             {children}
@@ -151,7 +152,7 @@ export const GlassBadge = ({
     ...props
 }: GlassBadgeProps) => (
     <span
-        className={`glass-panel-sm inline-block px-3 py-1 text-[12px] font-bold uppercase tracking-widest ${getBadgeColor(color)} ${className}`}
+        className={`glass-panel-sm backdrop-blur-xl inline-block px-3 py-1 text-[12px] font-bold uppercase tracking-widest ${getBadgeColor(color)} ${className}`}
         {...props}
     >
         {children}
@@ -179,7 +180,7 @@ export const StatCard = ({
     ...props
 }: StatCardProps) => (
     <div
-        className={`glass-panel p-4 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.06] transition-[background,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${className}`}
+        className={`glass-panel backdrop-blur-2xl p-4 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.06] transition-[background,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${className}`}
         {...props}
     >
         <div className="flex items-center gap-2 justify-center w-full">

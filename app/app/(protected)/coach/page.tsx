@@ -25,9 +25,9 @@ const BotMessage = ({ text }: { text: string }) => (
             </div>
             <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em]">Arete</span>
         </div>
-        <div className="glass-panel p-4 overflow-hidden group/msg">
+        <div className="relative glass-panel backdrop-blur-2xl p-4 overflow-hidden group/msg">
             <div className="absolute -inset-[1px] bg-gradient-to-r from-white/5 via-white/3 to-white/5 rounded-[1.5rem] blur-[2px] opacity-30 group-hover:opacity-50 transition-opacity duration-700 pointer-events-none" />
-            <div className="relative prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-snug prose-p:text-zinc-200 prose-li:m-0 prose-li:text-zinc-200 prose-headings:text-zinc-100 prose-headings:font-bold prose-h1:text-3xl md:prose-h1:text-4xl prose-h2:text-2xl md:prose-h2:text-3xl prose-h3:text-xl prose-h4:text-lg prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-code:text-zinc-100 prose-strong:text-zinc-100">
+            <div className="relative z-[1] prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-snug prose-p:text-zinc-200 prose-li:m-0 prose-li:text-zinc-200 prose-headings:text-zinc-100 prose-headings:font-bold prose-headings:font-sans prose-h1:text-3xl md:prose-h1:text-4xl prose-h2:text-2xl md:prose-h2:text-3xl prose-h3:text-xl prose-h4:text-lg prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-code:text-zinc-100 prose-strong:text-zinc-100">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {text}
                 </ReactMarkdown>
@@ -47,7 +47,7 @@ const UserMessage = ({ text }: { text: string }) => (
             <span className="text-[11px] font-bold text-aura-secondary uppercase tracking-[0.2em]">You</span>
             <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
         </div>
-        <div className="relative bg-white/[0.05] backdrop-blur-2xl border border-white/[0.1] rounded-[1.5rem] p-4 shadow-2xl">
+        <div className="relative glass-panel backdrop-blur-2xl p-4 shadow-2xl">
             <p className="font-sans text-sm text-zinc-200 tracking-tight font-light whitespace-pre-wrap break-words">
                 {text}
             </p>
@@ -367,7 +367,7 @@ export default function CoachPage() {
                                     className="cursor-pointer relative group"
                                 >
                                     {editingConvId === conv._id ? (
-                                        <div className="glass-panel-sm p-3 flex gap-2">
+                                        <div className="glass-panel-sm backdrop-blur-xl p-3 flex gap-2">
                                             <input
                                                 type="text"
                                                 value={editingTitle}
@@ -390,9 +390,9 @@ export default function CoachPage() {
                                     ) : (
                                         <div
                                             onClick={() => setActiveConv(conv)}
-                                            className={`glass-panel-sm p-3 transition-all flex items-center justify-between relative ${activeConv?._id === conv._id
-                                                ? 'bg-white/[0.1] border-white/[0.15]'
-                                                : 'hover:bg-white/[0.06]'
+                                            className={`glass-panel-sm backdrop-blur-xl p-3 transition-all flex items-center justify-between relative ${activeConv?._id === conv._id
+                                                ? 'ring-1 ring-inset ring-white/25 border-white/15'
+                                                : 'hover:ring-1 hover:ring-inset hover:ring-white/10'
                                                 }`}
                                         >
                                             <div className="flex-1 min-w-0">
@@ -432,7 +432,7 @@ export default function CoachPage() {
                                                                 duration: 0.32,
                                                                 ease: [0.22, 1, 0.36, 1],
                                                             }}
-                                                            className="absolute right-0 top-full mt-2 w-40 glass-panel-sm p-2 space-y-1 z-50 border border-white/[0.1]"
+                                                            className="absolute right-0 top-full mt-2 w-40 glass-panel-sm backdrop-blur-xl p-2 space-y-1 z-50 border border-white/[0.1]"
                                                         >
                                                             <button
                                                                 onClick={(e) => {

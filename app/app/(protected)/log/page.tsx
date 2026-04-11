@@ -115,7 +115,7 @@ export default function LogPage() {
 
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-white/[0.05]">
                                     <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2 glass-panel-sm px-4 py-2">
+                                        <div className="flex items-center gap-2 glass-panel-sm backdrop-blur-xl px-4 py-2">
                                             <Calendar size={14} className="text-aura-secondary" />
                                             <input
                                                 type="date"
@@ -162,7 +162,7 @@ export default function LogPage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -4 }}
                                             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                                            className="glass-panel-sm bg-orange-500/10 border-orange-500/20 text-orange-200 text-[12px] font-bold uppercase tracking-[0.2em] p-4 flex items-center justify-between"
+                                            className="glass-panel-sm backdrop-blur-xl bg-orange-500/10 border-orange-500/20 text-orange-200 text-[12px] font-bold uppercase tracking-[0.2em] p-4 flex items-center justify-between"
                                         >
                                             <div className="flex items-center gap-2">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
@@ -186,7 +186,7 @@ export default function LogPage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -4 }}
                                             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                                            className="glass-panel-sm bg-red-500/10 border-red-500/20 text-red-200 text-[12px] font-bold uppercase tracking-[0.2em] p-4 text-center"
+                                            className="glass-panel-sm backdrop-blur-xl bg-red-500/10 border-red-500/20 text-red-200 text-[12px] font-bold uppercase tracking-[0.2em] p-4 text-center"
                                         >
                                             Error: {error}
                                         </motion.div>
@@ -217,7 +217,7 @@ export default function LogPage() {
                         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                         className="text-center space-y-10 py-12"
                     >
-                        <div className="relative inline-flex items-center justify-center w-32 h-32 rounded-full border border-aura-accent/20 bg-aura-accent/5 backdrop-blur-3xl mb-4 group">
+                        <div className="relative inline-flex items-center justify-center w-32 h-32 rounded-full border border-aura-accent/20 bg-aura-accent/5 backdrop-blur-3xl backdrop-saturate-150 mb-4 group">
                             <div className="absolute inset-0 bg-aura-accent/10 blur-2xl rounded-full scale-125 animate-pulse" />
                             <Sparkles className="h-12 w-12 text-aura-accent relative z-10" />
                         </div>
@@ -252,14 +252,14 @@ export default function LogPage() {
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-2 text-sm">
-                                            <div className="glass-panel-sm p-3">
+                                            <div className="glass-panel-sm backdrop-blur-xl p-3">
                                                 <span className="text-[11px] text-zinc-500 block">Consumed</span>
                                                 <span className="text-base font-bold text-green-300">
                                                     {structured.energyEstimate.caloriesInEstimate ? `~${structured.energyEstimate.caloriesInEstimate}` : '—'}
                                                 </span>
                                                 <span className="text-[11px] text-zinc-600">kcal</span>
                                             </div>
-                                            <div className="glass-panel-sm p-3">
+                                            <div className="glass-panel-sm backdrop-blur-xl p-3">
                                                 <span className="text-[11px] text-zinc-500 block">Burned</span>
                                                 <span className="text-base font-bold text-orange-300">
                                                     {structured.energyEstimate.caloriesOutWorkoutEstimate ? `~${structured.energyEstimate.caloriesOutWorkoutEstimate}` : '—'}

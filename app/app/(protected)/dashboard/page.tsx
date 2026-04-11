@@ -341,18 +341,18 @@ export default function DashboardPage() {
                 <div className="lg:col-span-2 space-y-6">
                     {/* Weekly Summary */}
                     {latestSummary ? (
-                        <GlassCard accent="cyan" className="space-y-3">
+                        <GlassCard className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-base font-bold text-zinc-100 uppercase tracking-widest">Weekly Summary</h3>
                                 <span className="text-[11px] text-zinc-500">{latestSummary.rangeStart} to {latestSummary.rangeEnd}</span>
                             </div>
                             <motion.div
                                 initial={{ maxHeight: '4.5rem', overflow: 'hidden' }}
-                                animate={{ maxHeight: expandedSummary ? '500px' : '4.5rem' }}
+                                animate={{ maxHeight: expandedSummary ? '4000px' : '4.5rem' }}
                                 transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
                                 className="overflow-hidden"
                             >
-                                <div className={`prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-relaxed prose-p:text-zinc-300 prose-li:m-0 prose-li:text-zinc-300 prose-headings:text-zinc-100 prose-headings:font-bold prose-h1:text-3xl md:prose-h1:text-4xl prose-h2:text-2xl md:prose-h2:text-3xl prose-h3:text-xl prose-h4:text-lg prose-strong:text-zinc-100 prose-code:text-aura-accent`}>
+                                <div className={`prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-relaxed prose-p:text-zinc-300 prose-li:m-0 prose-li:text-zinc-300 prose-headings:text-zinc-100 prose-headings:font-bold prose-headings:font-sans prose-h1:text-3xl md:prose-h1:text-4xl prose-h2:text-2xl md:prose-h2:text-3xl prose-h3:text-xl prose-h4:text-lg prose-strong:text-zinc-100 prose-code:text-aura-accent`}>
                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                         {latestSummary.summaryText}
                                     </ReactMarkdown>
@@ -766,11 +766,11 @@ export default function DashboardPage() {
                             className="fixed inset-0 z-50 flex items-center justify-center p-4"
                         >
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.96, y: 16 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                                transition={{ type: 'spring', damping: 24, stiffness: 340 }}
-                                className="glass-scrollbar w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-6 p-8 bg-black/70 backdrop-blur-xl rounded-2xl border border-white/[0.1]">
+                            initial={{ opacity: 0, scale: 0.96, y: 16 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                            transition={{ type: 'spring', damping: 24, stiffness: 340 }}
+                            className="glass-scrollbar w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-6 p-8 bg-black/70 backdrop-blur-xl rounded-2xl border border-white/[0.1]">
                                 {/* Header */}
                                 <div className="flex items-center justify-between border-b border-white/[0.05] pb-4">
                                     <div>

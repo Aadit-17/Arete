@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${dmSans.variable} ${dmSerifDisplay.variable}`}>
-      <body className="antialiased selection:bg-cyan-500/20 selection:text-cyan-200 bg-[#020202] text-zinc-100 font-sans leading-relaxed tracking-[0.01em]">
+      <body className="antialiased selection:bg-cyan-500/20 selection:text-cyan-200 text-zinc-100 font-sans leading-relaxed tracking-[0.01em]">
         <CosmosBackground />
 
         <Navbar />
