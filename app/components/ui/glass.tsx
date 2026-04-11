@@ -179,7 +179,7 @@ export const StatCard = ({
     ...props
 }: StatCardProps) => (
     <div
-        className={`glass-panel p-4 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.05] transition-all ${className}`}
+        className={`glass-panel p-4 flex flex-col items-center justify-center gap-2 group hover:bg-white/[0.06] transition-[background,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${className}`}
         {...props}
     >
         <div className="flex items-center gap-2 justify-center w-full">

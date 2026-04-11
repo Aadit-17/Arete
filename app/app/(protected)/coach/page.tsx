@@ -13,9 +13,9 @@ import { GlassCard, GlassButton } from '@/components/ui/glass';
 
 const BotMessage = ({ text }: { text: string }) => (
     <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
         className="flex flex-col gap-2 max-w-[90%] group"
     >
         <div className="flex items-center gap-2 px-1">
@@ -38,9 +38,9 @@ const BotMessage = ({ text }: { text: string }) => (
 
 const UserMessage = ({ text }: { text: string }) => (
     <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
         className="flex flex-col gap-2 items-end ml-auto max-w-[85%] group"
     >
         <div className="flex items-center gap-2 px-1">
@@ -353,10 +353,17 @@ export default function CoachPage() {
                             {conversations.map((conv, idx) => (
                                 <motion.div
                                     key={conv._id}
-                                    whileHover={{ x: 4 }}
+                                    whileHover={{
+                                        x: 4,
+                                        transition: { type: 'spring', stiffness: 420, damping: 30 },
+                                    }}
                                     initial={{ opacity: 0, x: -8 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.04, duration: 0.3 }}
+                                    transition={{
+                                        delay: idx * 0.035,
+                                        duration: 0.36,
+                                        ease: [0.22, 1, 0.36, 1],
+                                    }}
                                     className="cursor-pointer relative group"
                                 >
                                     {editingConvId === conv._id ? (
@@ -418,9 +425,13 @@ export default function CoachPage() {
                                                             className="fixed inset-0 z-40"
                                                         />
                                                         <motion.div
-                                                            initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                                                            initial={{ opacity: 0, y: -4, scale: 0.96 }}
                                                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                            exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                                                            exit={{ opacity: 0, y: -4, scale: 0.96 }}
+                                                            transition={{
+                                                                duration: 0.32,
+                                                                ease: [0.22, 1, 0.36, 1],
+                                                            }}
                                                             className="absolute right-0 top-full mt-2 w-40 glass-panel-sm p-2 space-y-1 z-50 border border-white/[0.1]"
                                                         >
                                                             <button

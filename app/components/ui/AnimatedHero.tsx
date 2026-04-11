@@ -78,7 +78,7 @@ export const AnimatedHero = () => {
                         scale: [1, 1.1, 0.95, 1],
                     }}
                     transition={{
-                        duration: 20,
+                        duration: 22,
                         repeat: Infinity,
                         ease: 'easeInOut',
                     }}
@@ -99,7 +99,7 @@ export const AnimatedHero = () => {
                         scale: [0.9, 1.1, 0.85, 0.9],
                     }}
                     transition={{
-                        duration: 25,
+                        duration: 28,
                         repeat: Infinity,
                         ease: 'easeInOut',
                         delay: 2,
@@ -114,9 +114,13 @@ export const AnimatedHero = () => {
             {/* Content overlay */}
             <div className="absolute inset-0 flex flex-col items-center justify-center px-6 pointer-events-none z-10">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
+                    transition={{
+                        delay: 0.22,
+                        duration: 0.65,
+                        ease: [0.22, 1, 0.36, 1],
+                    }}
                     className="space-y-6 w-full max-w-2xl"
                 >
                     {/* Greeting */}

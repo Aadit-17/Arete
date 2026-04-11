@@ -58,6 +58,7 @@ const EntryCard = ({ entry, isLatest = false, isToday = false, onClick }: any) =
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
             <GlassCard onClick={onClick} className={`p-5 space-y-4 cursor-pointer hover:bg-white/[0.08] transition-all ${isLatest ? 'border-aura-accent/40 bg-white/[0.06]' : ''}`}>
                 <div className="flex items-center justify-between">
@@ -350,7 +351,7 @@ export default function DashboardPage() {
                             <motion.div
                                 initial={{ maxHeight: '4.5rem', overflow: 'hidden' }}
                                 animate={{ maxHeight: expandedSummary ? '500px' : '4.5rem' }}
-                                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
                                 className="overflow-hidden"
                             >
                                 <div className={`prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-relaxed prose-p:text-zinc-300 prose-li:m-0 prose-li:text-zinc-300 prose-headings:text-zinc-100 prose-headings:font-bold prose-strong:text-zinc-100 prose-code:text-aura-accent`}>
@@ -643,7 +644,11 @@ export default function DashboardPage() {
                                         key={entry._id}
                                         initial={{ opacity: 0, y: 8 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: idx * 0.05, duration: 0.3 }}
+                                        transition={{
+                                            delay: idx * 0.045,
+                                            duration: 0.38,
+                                            ease: [0.22, 1, 0.36, 1],
+                                        }}
                                     >
                                         <div onClick={() => setSelectedEntry(entry)}>
                                             <EntryCard entry={entry} isLatest={idx === 0} isToday={entry.dateKey === today} onClick={() => setSelectedEntry(entry)} />
@@ -704,13 +709,15 @@ export default function DashboardPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                             onClick={() => setShowGoalsModal(false)}
                             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
                         />
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            initial={{ opacity: 0, scale: 0.97, y: 16 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+                            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-50"
                         >
                             <div className="glass-panel-elevated p-8 space-y-6">
@@ -748,6 +755,7 @@ export default function DashboardPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                             onClick={() => setSelectedEntry(null)}
                             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
                         />
@@ -755,6 +763,7 @@ export default function DashboardPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                             onClick={(e) => e.currentTarget === e.target && setSelectedEntry(null)}
                             className="fixed inset-0 z-50 flex items-center justify-center p-4"
                         >
@@ -762,7 +771,7 @@ export default function DashboardPage() {
                                 initial={{ opacity: 0, scale: 0.96, y: 16 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.96, y: 8 }}
-                                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                                transition={{ type: 'spring', damping: 24, stiffness: 340 }}
                                 className="glass-scrollbar w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-6 p-8 bg-black/70 backdrop-blur-xl rounded-2xl border border-white/[0.1]">
                                 {/* Header */}
                                 <div className="flex items-center justify-between border-b border-white/[0.05] pb-4">

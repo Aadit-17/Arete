@@ -41,8 +41,9 @@ export default function RegisterPage() {
     return (
         <div className="flex items-center justify-center min-h-[70vh] px-4 animate-fade-in">
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full max-w-md relative group"
             >
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-aura-accent/10 via-blue-500/10 to-aura-accent/10 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>

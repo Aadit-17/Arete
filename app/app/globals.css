@@ -1,26 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --font-serif: 'Source Serif 4', Georgia, serif;
+  /* DM Sans for UI/body; DM Serif Display for headings (see @layer base). */
+  --font-sans: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-dm-serif), Georgia, "Times New Roman", serif;
   --color-aura-accent: #00f5ff;
   /* Sophisticated Cyber Teal */
   --color-aura-secondary: #94a3b8;
   /* Muted Slate */
   --color-aura-indigo: #6366f1;
   --color-aura-violet: #a855f7;
-  --color-glass-surface: rgba(255, 255, 255, 0.06);
-  --color-glass-border: rgba(255, 255, 255, 0.10);
-  --color-glass-highlight: rgba(255, 255, 255, 0.14);
+  --color-glass-surface: rgba(255, 255, 255, 0.04);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-highlight: rgba(255, 255, 255, 0.10);
 
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: blur(40px);
+  --glass-bg: rgba(255, 255, 255, 0.035);
+  --glass-border: rgba(255, 255, 255, 0.07);
+  --glass-blur: blur(48px);
+
+  /* Shared motion curve for UI entrances */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
   * {
     @apply border-white/5;
+  }
+
+  html {
+    @apply bg-[#020202];
   }
 
   body {
@@ -29,6 +37,27 @@
     padding: 0;
     min-height: 100vh;
     overflow-x: hidden;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+
+  /* Display serif for titles only — avoids faux-bold body text from DM Serif Display. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+    font-synthesis-weight: none;
+    font-synthesis-style: none;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  p,
+  li {
+    line-height: 1.65;
   }
 }
 
@@ -69,52 +98,69 @@
   }
 
   .glass-panel {
-    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
-    backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.055) 0%,
+      rgba(255, 255, 255, 0.02) 45%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+    backdrop-filter: blur(28px) saturate(165%) brightness(0.92);
+    -webkit-backdrop-filter: blur(28px) saturate(165%) brightness(0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1.5rem;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.14),
-      0 8px 32px rgba(0,0,0,0.4),
-      0 2px 8px rgba(0,0,0,0.3);
+      inset 0 1px 0 rgba(255, 255, 255, 0.09),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+      0 12px 40px rgba(0, 0, 0, 0.55),
+      0 2px 8px rgba(0, 0, 0, 0.35);
   }
 
   .glass-panel-sm {
-    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
-    backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.018) 100%
+    );
+    backdrop-filter: blur(24px) saturate(165%) brightness(0.92);
+    -webkit-backdrop-filter: blur(24px) saturate(165%) brightness(0.92);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 0.75rem;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.14),
-      0 4px 12px rgba(0,0,0,0.2);
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 6px 20px rgba(0, 0, 0, 0.45);
   }
 
   .glass-panel-elevated {
-    background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
-    backdrop-filter: blur(20px) saturate(180%) brightness(1.1);
-    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.1);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.065) 0%,
+      rgba(255, 255, 255, 0.028) 50%,
+      rgba(255, 255, 255, 0.035) 100%
+    );
+    backdrop-filter: blur(32px) saturate(170%) brightness(0.94);
+    -webkit-backdrop-filter: blur(32px) saturate(170%) brightness(0.94);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 1.5rem;
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.16),
-      0 16px 48px rgba(0,0,0,0.5),
-      0 4px 12px rgba(0,0,0,0.3);
+      inset 0 1px 0 rgba(255, 255, 255, 0.11),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+      0 20px 56px rgba(0, 0, 0, 0.6),
+      0 4px 14px rgba(0, 0, 0, 0.4);
   }
 
   .glass-button {
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(24px) saturate(165%) brightness(0.92);
+    -webkit-backdrop-filter: blur(24px) saturate(165%) brightness(0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 9999px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-    transition: background 0.2s ease, border-color 0.2s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: background 0.25s var(--ease-out-expo), border-color 0.25s var(--ease-out-expo),
+      box-shadow 0.25s var(--ease-out-expo);
   }
   .glass-button:hover {
-    background: rgba(255,255,255,0.10);
-    border-color: rgba(255,255,255,0.16);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
   }
 
   .accent-text {
@@ -127,17 +173,26 @@
   }
 
   .aura-btn-primary {
-    @apply relative overflow-hidden px-7 py-3 rounded-full bg-white text-black text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:scale-[1.02] hover:shadow-[0_0_25px_var(--color-aura-accent)] active:scale-[0.98];
+    @apply relative overflow-hidden px-7 py-3 rounded-full bg-white text-black text-[11px] font-bold uppercase tracking-[0.2em] hover:scale-[1.02] hover:shadow-[0_0_25px_var(--color-aura-accent)] active:scale-[0.98];
+    transition:
+      transform 0.35s var(--ease-out-expo),
+      box-shadow 0.35s var(--ease-out-expo);
   }
 
   .aura-btn-glass {
-    @apply relative overflow-hidden px-6 py-2.5 rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] text-white/60 text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:bg-white/[0.08] hover:text-white active:scale-[0.95];
+    @apply relative overflow-hidden px-6 py-2.5 rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.1] text-white/60 text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-white/[0.08] hover:text-white active:scale-[0.95];
+    transition:
+      background-color 0.3s var(--ease-out-expo),
+      color 0.3s var(--ease-out-expo),
+      border-color 0.3s var(--ease-out-expo),
+      transform 0.25s var(--ease-out-expo);
   }
 
   .input-aura {
-    @apply w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl px-6 py-4 text-sm font-light text-white outline-none focus:border-aura-accent/30 transition-all;
-    backdrop-filter: blur(20px) saturate(180%) brightness(1.02);
-    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.02);
+    @apply w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl px-6 py-4 text-sm font-light text-white outline-none focus:border-aura-accent/30 transition-[border-color,box-shadow] duration-300;
+    transition-timing-function: var(--ease-out-expo);
+    backdrop-filter: blur(24px) saturate(165%) brightness(0.92);
+    -webkit-backdrop-filter: blur(24px) saturate(165%) brightness(0.92);
   }
 }
 
@@ -155,5 +210,5 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.45s var(--ease-out-expo) forwards;
 }

@@ -36,8 +36,9 @@ export default function LoginPage() {
     return (
         <div className="flex items-center justify-center min-h-[70vh] px-4">
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full max-w-md relative group"
             >
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-aura-accent/10 via-blue-500/10 to-aura-accent/10 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>

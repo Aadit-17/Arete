@@ -79,17 +79,22 @@ export default function LogPage() {
 
             <header className="mb-8 text-center space-y-3">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     className="inline-flex items-center gap-2"
                 >
                     <GlassBadge>Daily Log</GlassBadge>
                 </motion.div>
 
                 <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
+                    transition={{
+                        delay: 0.08,
+                        duration: 0.55,
+                        ease: [0.22, 1, 0.36, 1],
+                    }}
                     className="text-4xl font-bold tracking-tight"
                 >
                     Log <span className="text-zinc-500 font-mono tracking-tighter">{dateKey}</span>
@@ -100,9 +105,10 @@ export default function LogPage() {
                 {!success ? (
                     <motion.div
                         key="form"
-                        initial={{ opacity: 0, scale: 0.98 }}
+                        initial={{ opacity: 0, scale: 0.985 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.97 }}
+                        exit={{ opacity: 0, scale: 0.975 }}
+                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                     >
                         <form onSubmit={handleLog}>
                             <GlassCard className="p-12 space-y-6">
@@ -155,6 +161,7 @@ export default function LogPage() {
                                             initial={{ opacity: 0, y: -4 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                                             className="glass-panel-sm bg-orange-500/10 border-orange-500/20 text-orange-200 text-[12px] font-bold uppercase tracking-[0.2em] p-4 flex items-center justify-between"
                                         >
                                             <div className="flex items-center gap-2">
@@ -178,6 +185,7 @@ export default function LogPage() {
                                             initial={{ opacity: 0, y: -4 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                                             className="glass-panel-sm bg-red-500/10 border-red-500/20 text-red-200 text-[12px] font-bold uppercase tracking-[0.2em] p-4 text-center"
                                         >
                                             Error: {error}
@@ -204,8 +212,9 @@ export default function LogPage() {
                 ) : (
                     <motion.div
                         key="success"
-                        initial={{ opacity: 0, y: 40 }}
+                        initial={{ opacity: 0, y: 28 }}
                         animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                         className="text-center space-y-10 py-12"
                     >
                         <div className="relative inline-flex items-center justify-center w-32 h-32 rounded-full border border-aura-accent/20 bg-aura-accent/5 backdrop-blur-3xl mb-4 group">
