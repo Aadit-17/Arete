@@ -311,7 +311,7 @@ export default function DashboardPage() {
     if (user?.status === 'pending') {
         return (
             <div className="max-w-4xl mx-auto px-6 py-12 text-center">
-                <h1 className="text-6xl md:text-8xl font-bold tracking-tight mb-8">Pending Activation</h1>
+                <h1 className="text-7xl md:text-9xl font-bold tracking-tight mb-8">Pending Activation</h1>
                 <p className="text-aura-secondary text-lg">Manual verification required to establish link.</p>
             </div>
         );
@@ -322,12 +322,10 @@ export default function DashboardPage() {
     const isLatestToday = latestEntry?.dateKey === today;
 
     return (
-        <div className="w-full">
-            {/* Animated Hero Section */}
+        <div className="w-full px-6 lg:px-8 max-w-7xl mx-auto">
             <AnimatedHero />
 
-            <div className="px-6 lg:px-8 max-w-7xl mx-auto">
-                {/* Top Stats Row */}
+            {/* Top Stats Row */}
             {latestEntry && isLatestToday && (
                 <div className="mb-8 grid grid-cols-2 lg:grid-cols-4 gap-3">
                     <StatCard label="Calories In" value={latestEntry.energyEstimate?.caloriesInEstimate ?? '—'} unit="kcal" valueColor="text-zinc-100" />
@@ -345,7 +343,7 @@ export default function DashboardPage() {
                     {latestSummary ? (
                         <GlassCard accent="cyan" className="space-y-3">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-bold text-zinc-100 uppercase tracking-widest">Weekly Summary</h3>
+                                <h3 className="text-base font-bold text-zinc-100 uppercase tracking-widest">Weekly Summary</h3>
                                 <span className="text-[11px] text-zinc-500">{latestSummary.rangeStart} to {latestSummary.rangeEnd}</span>
                             </div>
                             <motion.div
@@ -354,7 +352,7 @@ export default function DashboardPage() {
                                 transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
                                 className="overflow-hidden"
                             >
-                                <div className={`prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-relaxed prose-p:text-zinc-300 prose-li:m-0 prose-li:text-zinc-300 prose-headings:text-zinc-100 prose-headings:font-bold prose-strong:text-zinc-100 prose-code:text-aura-accent`}>
+                                <div className={`prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-relaxed prose-p:text-zinc-300 prose-li:m-0 prose-li:text-zinc-300 prose-headings:text-zinc-100 prose-headings:font-bold prose-h1:text-3xl md:prose-h1:text-4xl prose-h2:text-2xl md:prose-h2:text-3xl prose-h3:text-xl prose-h4:text-lg prose-strong:text-zinc-100 prose-code:text-aura-accent`}>
                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                         {latestSummary.summaryText}
                                     </ReactMarkdown>
@@ -388,7 +386,7 @@ export default function DashboardPage() {
                     {/* Goals */}
                     <GlassCard className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Goals</h3>
+                            <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Goals</h3>
                             <button onClick={() => setShowGoalsModal(true)} className="p-1.5 rounded-lg hover:bg-white/[0.05]">
                                 <Plus size={16} className="text-zinc-100" />
                             </button>
@@ -410,7 +408,7 @@ export default function DashboardPage() {
                     {/* Calorie Chart */}
                     <GlassCard className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Energy Trends</h3>
+                            <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Energy Trends</h3>
                             <div className="flex gap-1">
                                 <button
                                     onClick={() => handleChartNav('calories', 'prev')}
@@ -449,7 +447,7 @@ export default function DashboardPage() {
                     <div className="grid grid-cols-2 gap-6">
                         <GlassCard className="space-y-3">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Water Intake</h3>
+                                <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Water Intake</h3>
                                 <div className="flex gap-1">
                                     <button
                                         onClick={() => handleChartNav('water', 'prev')}
@@ -492,7 +490,7 @@ export default function DashboardPage() {
                     {/* Screen Time */}
                     <GlassCard className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Screen Time</h3>
+                            <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Screen Time</h3>
                             <div className="flex gap-1">
                                 <button
                                     onClick={() => handleChartNav('screenTime', 'prev')}
@@ -528,7 +526,7 @@ export default function DashboardPage() {
                     {/* Sleep Patterns */}
                     <GlassCard className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Sleep Patterns</h3>
+                            <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Sleep Patterns</h3>
                             <div className="flex gap-1">
                                 <button
                                     onClick={() => handleChartNav('sleep', 'prev')}
@@ -567,7 +565,7 @@ export default function DashboardPage() {
                     {foodBreakdown.length > 0 && (
                         <GlassCard className="space-y-3">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Food Types</h3>
+                                <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Food Types</h3>
                                 <div className="flex gap-1">
                                     <button
                                         onClick={() => handleChartNav('food', 'prev')}
@@ -632,7 +630,7 @@ export default function DashboardPage() {
                     {/* Recent Entries */}
                     <GlassCard className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Recent Logs</h3>
+                            <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Recent Logs</h3>
                             <button onClick={handleRefresh} disabled={refreshing} className="p-1 rounded hover:bg-white/[0.03]">
                                 <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
                             </button>
@@ -692,7 +690,7 @@ export default function DashboardPage() {
                     <Link href="/coach">
                         <GlassCard className="p-3 flex items-center justify-between group hover:bg-white/[0.08] cursor-pointer">
                             <div>
-                                <h4 className="text-sm font-bold text-white">Talk to Arete</h4>
+                                <h4 className="text-base font-bold text-white">Talk to Arete</h4>
                                 <p className="text-[11px] text-zinc-500">Get guidance & insights</p>
                             </div>
                             <Sparkles size={16} className="text-zinc-100" />
@@ -721,7 +719,7 @@ export default function DashboardPage() {
                             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-50"
                         >
                             <div className="glass-panel-elevated p-8 space-y-6">
-                                <h2 className="text-2xl font-bold">Set Goals</h2>
+                                <h2 className="text-3xl md:text-4xl font-bold">Set Goals</h2>
                                 <div className="space-y-4">
                                     {['workoutsPerWeek', 'readingPagesPerWeek', 'targetWaterMlPerDay', 'codingHoursPerWeek'].map(key => (
                                         <div key={key}>
@@ -776,7 +774,7 @@ export default function DashboardPage() {
                                 {/* Header */}
                                 <div className="flex items-center justify-between border-b border-white/[0.05] pb-4">
                                     <div>
-                                        <h2 className="text-2xl font-bold text-zinc-100">
+                                        <h2 className="text-3xl md:text-4xl font-bold text-zinc-100">
                                             {selectedEntry.dateKey === today ? 'Today' : new Date(selectedEntry.dateKey + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                                         </h2>
                                         <p className="text-[12px] text-zinc-500 mt-1">{selectedEntry.dateKey}</p>
@@ -789,7 +787,7 @@ export default function DashboardPage() {
                                 {/* Daily Summary */}
                                 {selectedEntry.dailySummary && (
                                     <div className="space-y-2">
-                                        <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Summary</h3>
+                                        <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Summary</h3>
                                         <p className="text-sm text-zinc-200 leading-relaxed italic">"{selectedEntry.dailySummary}"</p>
                                     </div>
                                 )}
@@ -799,13 +797,13 @@ export default function DashboardPage() {
                                     <div className="space-y-3 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                                         <div className="flex items-center gap-2">
                                             <Utensils size={16} className="text-zinc-400" />
-                                            <h3 className="text-sm font-bold text-zinc-100">Food</h3>
+                                            <h3 className="text-base font-bold text-zinc-100">Food</h3>
                                         </div>
                                         <p className="text-sm text-zinc-200">{selectedEntry.structured.food.description}</p>
 
                                         {selectedEntry.structured.food.macros && (
                                             <div className="space-y-2 pt-2 border-t border-white/[0.05]">
-                                                <h4 className="text-[12px] font-bold text-zinc-400 uppercase tracking-widest">Macros</h4>
+                                                <h4 className="text-base font-bold text-zinc-400 uppercase tracking-widest">Macros</h4>
                                                 <div className="grid grid-cols-2 gap-2 text-[12px]">
                                                     {selectedEntry.structured.food.macros.proteinG && <div className="glass-panel-sm p-2"><span className="text-zinc-500">Protein</span><div className="text-zinc-100 font-bold">{selectedEntry.structured.food.macros.proteinG}g</div></div>}
                                                     {selectedEntry.structured.food.macros.carbsG && <div className="glass-panel-sm p-2"><span className="text-zinc-500">Carbs</span><div className="text-zinc-100 font-bold">{selectedEntry.structured.food.macros.carbsG}g</div></div>}
@@ -815,7 +813,7 @@ export default function DashboardPage() {
 
                                                 {/* Micronutrients */}
                                                 <div className="space-y-1 pt-2">
-                                                    <h5 className="text-[11px] font-bold text-zinc-500 uppercase">Key Micronutrients</h5>
+                                                    <h5 className="text-sm font-bold text-zinc-500 uppercase">Key Micronutrients</h5>
                                                     <div className="flex flex-wrap gap-1">
                                                         {['vitaminC', 'vitaminD', 'iron', 'calcium', 'potassium', 'magnesium'].map((micro) => selectedEntry.structured.food.macros[micro as any] && (
                                                             <GlassBadge key={micro} color="info" className="text-[11px]">
@@ -840,7 +838,7 @@ export default function DashboardPage() {
                                     <div className="space-y-3 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                                         <div className="flex items-center gap-2">
                                             <Zap size={16} className="text-aura-accent" />
-                                            <h3 className="text-sm font-bold text-zinc-100">Energy Balance</h3>
+                                            <h3 className="text-base font-bold text-zinc-100">Energy Balance</h3>
                                         </div>
                                         <div className="grid grid-cols-2 gap-3 text-sm">
                                             {selectedEntry.energyEstimate.caloriesInEstimate && (
@@ -884,7 +882,7 @@ export default function DashboardPage() {
                                     <div className="space-y-3 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                                         <div className="flex items-center gap-2">
                                             <Dumbbell size={16} className="text-zinc-400" />
-                                            <h3 className="text-sm font-bold text-zinc-100">Workout</h3>
+                                            <h3 className="text-base font-bold text-zinc-100">Workout</h3>
                                         </div>
                                         {selectedEntry.structured.workout.sessions?.map((session: any, idx: number) => (
                                             <div key={idx} className="flex items-center justify-between text-sm">
@@ -900,7 +898,7 @@ export default function DashboardPage() {
                                     <div className="space-y-3 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                                         <div className="flex items-center gap-2">
                                             <Moon size={16} className="text-zinc-400" />
-                                            <h3 className="text-sm font-bold text-zinc-100">Sleep</h3>
+                                            <h3 className="text-base font-bold text-zinc-100">Sleep</h3>
                                         </div>
                                         <div className="space-y-2 text-sm">
                                             {selectedEntry.structured.sleep.mainSleepHours && (
@@ -936,7 +934,7 @@ export default function DashboardPage() {
                                         <div className="space-y-2 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                                             <div className="flex items-center gap-2">
                                                 <Droplets size={14} className="text-zinc-400" />
-                                                <h4 className="text-sm font-bold text-zinc-100">Water</h4>
+                                                <h4 className="text-base font-bold text-zinc-100">Water</h4>
                                             </div>
                                             <p className="text-sm font-bold text-zinc-200">{selectedEntry.structured.water.amountMl}ml</p>
                                         </div>
@@ -945,7 +943,7 @@ export default function DashboardPage() {
                                         <div className="space-y-2 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                                             <div className="flex items-center gap-2">
                                                 <Smartphone size={14} className="text-zinc-400" />
-                                                <h4 className="text-sm font-bold text-zinc-100">Screen Time</h4>
+                                                <h4 className="text-base font-bold text-zinc-100">Screen Time</h4>
                                             </div>
                                             <p className="text-sm font-bold text-zinc-200">{selectedEntry.structured.screenTimeMinutes} min</p>
                                         </div>
@@ -956,7 +954,7 @@ export default function DashboardPage() {
                                 <div className="grid grid-cols-2 gap-4">
                                     {selectedEntry.structured?.productivityScore !== undefined && (
                                         <div className="space-y-2 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
-                                            <h4 className="text-sm font-bold text-zinc-100">Productivity</h4>
+                                            <h4 className="text-base font-bold text-zinc-100">Productivity</h4>
                                             <div className="flex items-center gap-2">
                                                 <div className="flex-1 h-2 bg-white/[0.1] rounded-full overflow-hidden">
                                                     <div className="h-full bg-aura-accent" style={{ width: `${(selectedEntry.structured.productivityScore / 10) * 100}%` }} />
@@ -967,7 +965,7 @@ export default function DashboardPage() {
                                     )}
                                     {selectedEntry.structured?.habitsScore !== undefined && (
                                         <div className="space-y-2 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
-                                            <h4 className="text-sm font-bold text-zinc-100">Habits</h4>
+                                            <h4 className="text-base font-bold text-zinc-100">Habits</h4>
                                             <div className="flex items-center gap-2">
                                                 <div className="flex-1 h-2 bg-white/[0.1] rounded-full overflow-hidden">
                                                     <div className="h-full bg-aura-accent" style={{ width: `${(selectedEntry.structured.habitsScore / 10) * 100}%` }} />
@@ -981,7 +979,7 @@ export default function DashboardPage() {
                                 {/* Reading */}
                                 {selectedEntry.structured?.reading?.didRead && (
                                     <div className="space-y-2 p-4 rounded-lg bg-white/[0.03] border border-white/[0.05]">
-                                        <h4 className="text-sm font-bold text-zinc-100">Reading</h4>
+                                        <h4 className="text-base font-bold text-zinc-100">Reading</h4>
                                         <p className="text-sm text-zinc-200">
                                             {selectedEntry.structured.reading.pages && `${selectedEntry.structured.reading.pages} pages`}
                                             {selectedEntry.structured.reading.title && ` of ${selectedEntry.structured.reading.title}`}
@@ -993,7 +991,6 @@ export default function DashboardPage() {
                     </>
                 )}
             </AnimatePresence>
-            </div>
         </div>
     );
 }

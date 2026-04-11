@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#c798ef",
+                        "secondary": "#cdbdff",
+                        "on-secondary-fixed": "#4700bd",
+                        "on-primary-container": "#004d57",
+                        "inverse-on-surface": "#565554",
+                        "secondary-container": "#2b007a",
+                        "background": "#0e0e0e",
+                        "on-tertiary": "#562b7b",
+                        "error-dim": "#c94947",
+                        "on-surface-variant": "#adaaaa",
+                        "surface-variant": "#262626",
+                        "on-secondary": "#4800bf",
+                        "outline": "#767575",
+                        "on-background": "#e8e5e4",
+                        "on-primary-fixed": "#003840",
+                        "outline-variant": "#484848",
+                        "surface-bright": "#2c2c2c",
+                        "secondary-fixed": "#e8deff",
+                        "on-error": "#490006",
+                        "secondary-dim": "#7e51ff",
+                        "surface-container-lowest": "#000000",
+                        "primary": "#81ecff",
+                        "primary-container": "#00e3fd",
+                        "tertiary": "#dfb7ff",
+                        "inverse-primary": "#006976",
+                        "error": "#ff716c",
+                        "surface-container": "#1a1919",
+                        "on-secondary-fixed-variant": "#652fe7",
+                        "on-tertiary-fixed-variant": "#552b7a",
+                        "surface-container-highest": "#262626",
+                        "on-tertiary-container": "#4b2170",
+                        "tertiary-dim": "#c798ef",
+                        "error-container": "#8a1a1e",
+                        "surface": "#0e0e0e",
+                        "on-surface": "#e8e5e4",
+                        "primary-fixed": "#00e3fd",
+                        "secondary-fixed-dim": "#dacdff",
+                        "on-error-container": "#ff9993",
+                        "on-tertiary-fixed": "#330259",
+                        "on-primary-fixed-variant": "#005762",
+                        "surface-tint": "#81ecff",
+                        "surface-container-high": "#201f1f",
+                        "tertiary-fixed": "#d5a5fe",
+                        "surface-dim": "#0e0e0e",
+                        "primary-dim": "#00d4ec",
+                        "primary-fixed-dim": "#00d4ec",
+                        "inverse-surface": "#fcf8f8",
+                        "surface-container-low": "#131313",
+                        "on-primary": "#005762",
+                        "on-secondary-container": "#ac93ff",
+                        "tertiary-container": "#d5a5fe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["DM Serif Display", "serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["DM Serif Display", "serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0e0e0e;
+        }
+        .galaxy-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBzfF_sw3sptpSFkEDdIAUxFC5hjyJLkAUdRk3d2u8vDvoXBFmVhOyHNZMv-mx2tLvRgtFDF0-k20F6bnVWY6uKJFQvyWhqVSseU5voE8JHLlUcG-V8ig8cDi1p0cHBjcs-Vo_tfR1nSO5l5EwybyQylgMsNaODjG8nV4MpYHnkRzAZugUUfPyjzSVHNu7aIbvezgbMGofhy5sydIwXovonBEzBT1XwxAZiVhbnh3xlZgXBaLEApvB4YSCa_yDz1u9f1e07xWw_b-o');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.6;
+        }
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body text-on-background selection:bg-primary/30 min-h-screen">
+<div class="galaxy-bg"></div>
+<div class="grain-overlay"></div>
+<div class="flex min-h-screen relative z-10">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 flex flex-col h-full py-6 w-64 liquid-glass border-r border-white/10 z-40">
+<div class="px-8 mb-12">
+<div class="flex items-center gap-3">
+<img alt="Arete Logo" class="w-8 h-8 rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvdDFMgW13Sqrwos33ugaotKEYLdb5g2xGuxkr7qVODD7q-93dBV-TAgx21AYWKPLfIm60fzSXLRKLIocYnj5BzIu8w4c8yZbhzb-b_1Z6v584xX_NmK4biOHfeGWbN2Xm2TEiGjzcLrUU21n5g5IGV0Ct7iMuJsu3idC4H3RpYZ_7Qu9p6dPs9CmEFv_bYgpdanTT39n-lcKZ2zzBkVmLM9ge2gz5Rf6YJwL8XiFSjtK4uyunBJeOvki3h2wQJJFjqOlv51D1mz8"/>
+<div>
+<h1 class="text-xl font-headline font-bold text-cyan-300 tracking-wide uppercase">Arete</h1>
+<p class="text-[10px] font-label tracking-[0.2em] uppercase text-zinc-400">Celestial Tracker</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<!-- Active Tab -->
+<a class="flex items-center gap-3 bg-white/10 text-cyan-300 rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(129,236,255,0.1)] transition-transform hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-sm font-label tracking-wide">Overview</span>
+</a>
+<a class="flex items-center gap-3 text-zinc-400 px-4 py-3 hover:bg-white/5 hover:text-cyan-100 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="text-sm font-label tracking-wide">Analytics</span>
+</a>
+<a class="flex items-center gap-3 text-zinc-400 px-4 py-3 hover:bg-white/5 hover:text-cyan-100 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-sm font-label tracking-wide">Activity</span>
+</a>
+<a class="flex items-center gap-3 text-zinc-400 px-4 py-3 hover:bg-white/5 hover:text-cyan-100 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="text-sm font-label tracking-wide">Coach AI</span>
+</a>
+<a class="flex items-center gap-3 text-zinc-400 px-4 py-3 hover:bg-white/5 hover:text-cyan-100 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-label tracking-wide">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-6">
+<button class="w-full liquid-glass bg-primary/10 py-3 rounded-xl border border-primary/30 text-primary text-sm font-label tracking-widest uppercase hover:bg-primary/20 transition-all">
+                    Ask Arete
+                </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 text-zinc-500 px-4 py-2 text-xs font-label uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span>Help</span>
+</a>
+<a class="flex items-center gap-3 text-zinc-500 px-4 py-2 text-xs font-label uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">fingerprint</span>
+<span>Privacy</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 p-8 lg:p-12">
+<!-- Hero Search Section -->
+<section class="max-w-5xl mx-auto mb-16">
+<div class="flex flex-col gap-2 mb-8">
+<span class="text-xs font-label text-primary tracking-[0.4em] uppercase opacity-80">System Status: Optimal</span>
+<h2 class="text-5xl font-headline font-semibold tracking-tight text-white">Universal Dashboard</h2>
+</div>
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur-lg opacity-25 group-focus-within:opacity-50 transition-opacity"></div>
+<div class="relative flex items-center liquid-glass rounded-2xl p-4">
+<span class="material-symbols-outlined text-primary mx-4">auto_awesome</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-lg text-on-background placeholder:text-zinc-500 font-body" placeholder="Ask Arete anything..." type="text"/>
+<kbd class="hidden md:flex items-center gap-1 px-2 py-1 rounded bg-white/5 border border-white/10 text-zinc-500 text-[10px] font-label">
+<span class="text-xs">⌘</span> K
+                        </kbd>
+</div>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="liquid-glass p-6 rounded-2xl flex flex-col justify-between h-44">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label text-zinc-400 tracking-widest uppercase">Kcal In / Out</span>
+<span class="material-symbols-outlined text-secondary">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-3xl font-body font-bold text-white tracking-tighter">1,840 / 2,400</span>
+<div class="w-full h-1 bg-white/5 mt-4 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-3/4 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="liquid-glass p-6 rounded-2xl flex flex-col justify-between h-44">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label text-zinc-400 tracking-widest uppercase">Hydration L</span>
+<span class="material-symbols-outlined text-primary">water_drop</span>
+</div>
+<div class="flex flex-col">
+<span class="text-3xl font-body font-bold text-white tracking-tighter">2.4 / 3.5</span>
+<div class="w-full h-1 bg-white/5 mt-4 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="liquid-glass p-6 rounded-2xl flex flex-col justify-between h-44">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label text-zinc-400 tracking-widest uppercase">Workout Status</span>
+<span class="material-symbols-outlined text-tertiary">exercise</span>
+</div>
+<div class="flex flex-col">
+<span class="text-2xl font-headline text-white">In Progress</span>
+<span class="text-sm text-zinc-400 mt-1 font-body">Leg Day • 45m elapsed</span>
+</div>
+</div>
+</section>
+<!-- Large Content Grid -->
+<section class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Weekly Summary & Goals -->
+<div class="lg:col-span-2 space-y-8">
+<!-- Weekly Summary -->
+<div class="liquid-glass p-8 rounded-3xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<span class="material-symbols-outlined text-9xl">auto_graph</span>
+</div>
+<h3 class="text-3xl font-headline text-white mb-6">Weekly Synthesis</h3>
+<div class="max-w-none space-y-4 text-zinc-300 leading-relaxed font-body">
+<p>Your biometric data suggests a <strong class="text-primary font-bold">12% increase</strong> in overall aerobic capacity compared to last week. Sleep hygiene has improved, though REM latency remains slightly elevated.</p>
+<p class="font-label text-sm uppercase tracking-widest text-zinc-400">Recommendations for the upcoming cycle:</p>
+<ul class="list-disc list-inside space-y-2 text-sm text-zinc-300">
+<li>Increase magnesium intake by 200mg pre-sleep.</li>
+<li>Focus on Zone 2 cardio for 40 minutes on Wednesday.</li>
+<li>Prioritize unilateral leg movements to correct subtle asymmetry.</li>
+</ul>
+</div>
+<button class="mt-8 px-6 py-2 rounded-full border border-white/10 bg-white/5 text-xs font-label uppercase tracking-widest text-white hover:bg-white/10 transition-colors">
+                            Read full summary
+                        </button>
+</div>
+<!-- Charts Area -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="liquid-glass p-6 rounded-2xl">
+<h4 class="text-xs font-label tracking-widest text-zinc-400 uppercase mb-6">Energy Trends</h4>
+<div class="h-32 flex items-end gap-2 px-2">
+<div class="flex-1 bg-primary/20 rounded-t h-1/2"></div>
+<div class="flex-1 bg-primary/40 rounded-t h-3/4"></div>
+<div class="flex-1 bg-primary/30 rounded-t h-1/2"></div>
+<div class="flex-1 bg-primary/60 rounded-t h-full"></div>
+<div class="flex-1 bg-primary/40 rounded-t h-2/3"></div>
+<div class="flex-1 bg-primary/20 rounded-t h-1/3"></div>
+<div class="flex-1 bg-primary/50 rounded-t h-3/4"></div>
+</div>
+</div>
+<div class="liquid-glass p-6 rounded-2xl">
+<h4 class="text-xs font-label tracking-widest text-zinc-400 uppercase mb-6">Water Intake</h4>
+<div class="h-32 w-full relative">
+<svg class="w-full h-full" preserveaspectratio="none">
+<path class="opacity-50" d="M0 80 Q 25 70, 50 90 T 100 80 T 150 110 T 200 70 T 250 90 T 300 80" fill="none" stroke="#81ecff" stroke-width="2"></path>
+<path d="M0 100 Q 25 90, 50 110 T 100 100 T 150 130 T 200 90 T 250 110 T 300 100" fill="none" stroke="#81ecff" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Goals & Recent Logs -->
+<div class="space-y-8">
+<!-- Daily Goals -->
+<div class="liquid-glass p-6 rounded-2xl">
+<h3 class="text-xs font-label tracking-widest text-zinc-400 uppercase mb-6">Daily Targets</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group">
+<div class="w-5 h-5 rounded border border-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-primary">check</span>
+</div>
+<span class="text-sm font-label uppercase tracking-widest text-on-background">Morning Mindfulness</span>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group">
+<div class="w-5 h-5 rounded border border-zinc-600"></div>
+<span class="text-sm font-label uppercase tracking-widest text-on-background">10k Steps</span>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group">
+<div class="w-5 h-5 rounded border border-zinc-600"></div>
+<span class="text-sm font-label uppercase tracking-widest text-on-background">Post-workout Protein</span>
+</div>
+</div>
+</div>
+<!-- Recent Logs -->
+<div>
+<h3 class="text-xs font-label tracking-widest text-zinc-400 uppercase mb-4 px-2">Recent Logs</h3>
+<div class="space-y-3">
+<div class="liquid-glass p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">restaurant</span>
+</div>
+<div>
+<p class="text-sm font-label uppercase tracking-widest">Salmon Salad</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-widest font-label">Lunch • 12:45 PM</p>
+</div>
+</div>
+<div class="liquid-glass p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">fitness_center</span>
+</div>
+<div>
+<p class="text-sm font-label uppercase tracking-widest">Strength Training</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-widest font-label">Gym • 08:30 AM</p>
+</div>
+</div>
+<div class="liquid-glass p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">bedtime</span>
+</div>
+<div>
+<p class="text-sm font-label uppercase tracking-widest">Deep Sleep</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-widest font-label">Analysis • 07:15 AM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Component -->
+<footer class="max-w-7xl mx-auto flex flex-col items-center gap-4 w-full py-12 border-t border-white/5 mt-16">
+<div class="flex gap-8">
+<a class="text-zinc-500 text-[10px] font-label tracking-[0.2em] uppercase hover:text-zinc-300 transition-colors" href="#">Documentation</a>
+<a class="text-zinc-500 text-[10px] font-label tracking-[0.2em] uppercase hover:text-zinc-300 transition-colors" href="#">Changelog</a>
+<a class="text-zinc-500 text-[10px] font-label tracking-[0.2em] uppercase hover:text-zinc-300 transition-colors" href="#">Terms</a>
+</div>
+<p class="text-[10px] font-label tracking-[0.2em] uppercase text-zinc-600">© 2024 ARETE. ALL SYSTEMS OPTIMAL.</p>
+</footer>
+</main>
+</div>
+</body></html>

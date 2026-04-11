@@ -56,13 +56,13 @@ export default function RegisterPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h2 className="text-3xl font-bold tracking-tight mb-2">Welcome to Arete</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">Welcome to Arete</h2>
                             <p className="text-aura-secondary text-sm font-light leading-relaxed">Your account is ready. Signing you in...</p>
                         </div>
                     ) : (
                         <>
                             <div className="text-center mb-10">
-                                <h1 className="text-4xl font-bold tracking-tight mb-2">Join Arete</h1>
+                                <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-2">Join Arete</h1>
                                 <p className="text-aura-secondary text-sm font-light uppercase tracking-widest">Your Personal Agent</p>
                             </div>
 

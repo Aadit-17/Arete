@@ -27,7 +27,7 @@ const BotMessage = ({ text }: { text: string }) => (
         </div>
         <div className="glass-panel p-4 overflow-hidden group/msg">
             <div className="absolute -inset-[1px] bg-gradient-to-r from-white/5 via-white/3 to-white/5 rounded-[1.5rem] blur-[2px] opacity-30 group-hover:opacity-50 transition-opacity duration-700 pointer-events-none" />
-            <div className="relative prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-snug prose-p:text-zinc-200 prose-li:m-0 prose-li:text-zinc-200 prose-headings:text-zinc-100 prose-headings:font-bold prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-code:text-zinc-100 prose-strong:text-zinc-100">
+            <div className="relative prose prose-invert prose-sm max-w-none text-sm prose-p:m-0 prose-p:leading-snug prose-p:text-zinc-200 prose-li:m-0 prose-li:text-zinc-200 prose-headings:text-zinc-100 prose-headings:font-bold prose-h1:text-3xl md:prose-h1:text-4xl prose-h2:text-2xl md:prose-h2:text-3xl prose-h3:text-xl prose-h4:text-lg prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-code:text-zinc-100 prose-strong:text-zinc-100">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {text}
                 </ReactMarkdown>
@@ -328,7 +328,7 @@ export default function CoachPage() {
                         <Atom size={8} className="text-zinc-400 animate-spin-slow" />
                         <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Arete Connected</span>
                     </div>
-                    <h1 className="text-3xl font-bold tracking-tight">Reflections</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Reflections</h1>
                 </div>
 
                 <button

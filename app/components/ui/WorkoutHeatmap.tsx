@@ -68,7 +68,7 @@ export const WorkoutHeatmap = ({ entries }: WorkoutHeatmapProps) => {
 
     return (
         <div className="space-y-3 h-full flex flex-col">
-            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">
+            <h3 className="text-base font-bold text-zinc-400 uppercase tracking-widest">
                 Workouts {monthNames[currentMonth]}
             </h3>
 

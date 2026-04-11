@@ -95,7 +95,7 @@ export default function LogPage() {
                         duration: 0.55,
                         ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="text-4xl font-bold tracking-tight"
+                    className="text-5xl md:text-6xl font-bold tracking-tight"
                 >
                     Log <span className="text-zinc-500 font-mono tracking-tighter">{dateKey}</span>
                 </motion.h1>
@@ -223,7 +223,7 @@ export default function LogPage() {
                         </div>
 
                         <div className="space-y-4">
-                            <h2 className="text-5xl font-bold tracking-tight">Captured</h2>
+                            <h2 className="text-6xl md:text-7xl font-bold tracking-tight">Captured</h2>
                             <p className="text-aura-secondary text-lg font-light leading-relaxed max-w-sm mx-auto">
                                 Your day has been processed. Arete is ready to reflect with you.
                             </p>

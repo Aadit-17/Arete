@@ -45,7 +45,7 @@ export default function LoginPage() {
 
                 <div className="relative bg-black/40 backdrop-blur-[60px] border border-white/[0.05] rounded-[2rem] p-10 shadow-2xl">
                     <div className="text-center mb-10">
-                        <h1 className="text-4xl font-bold tracking-tight mb-2">Welcome to Arete</h1>
+                        <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-2">Welcome to Arete</h1>
                         <p className="text-aura-secondary text-sm font-light uppercase tracking-widest">Your Personal Agent for Excellence</p>
                     </div>
 
