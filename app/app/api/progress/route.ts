@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
-import { genAI } from "@/lib/gemini";
+import { genAI, GEMINI_MODEL } from "@/lib/gemini";
 import type { UserProgressDoc, DailyEntryDoc } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -43,7 +43,7 @@ export async function PUT(req: NextRequest) {
 
     // 2. Call Gemini for a deep progress narrative
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+        const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
         const prompt = `
 Generate a deep, reflective progress narrative (approx 14-day view) for the user.
 Analyze their logs, identify behavioral patterns, and offer high-level reflection on their journey.

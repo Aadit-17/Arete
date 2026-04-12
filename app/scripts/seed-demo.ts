@@ -13,8 +13,9 @@ import type {
 dotenv.config({ path: ".env" });
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/tracker";
-const TEST_USER_EMAIL = "demo@example.com";
-const TEST_USER_PASSWORD = "demo123456";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+const TEST_USER_EMAIL = process.env.DEMO_ACCOUNT_EMAIL || "demo@example.com";
+const TEST_USER_PASSWORD = process.env.DEMO_ACCOUNT_PASSWORD || "demo123456";
 
 const client = new MongoClient(MONGO_URI);
 
@@ -278,7 +279,7 @@ async function seed() {
         },
         dailySummary:
           summaryOptions[Math.floor(Math.random() * summaryOptions.length)],
-        ingestModel: "gemini-2.5-flash-lite",
+        ingestModel: GEMINI_MODEL,
         energyEstimate: {
           caloriesInEstimate: caloriesIn,
           caloriesOutWorkoutEstimate: didWorkout && workout ? caloriesOut : null,
@@ -290,7 +291,7 @@ async function seed() {
             { title: "USDA FoodData Central" },
             { title: "MET tables for exercise" },
           ],
-          model: "gemini-2.5-flash-lite",
+          model: GEMINI_MODEL,
           updatedAt: new Date().toISOString(),
         },
         createdAt: new Date(date),

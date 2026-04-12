@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getDb } from "./db";
+import { GEMINI_MODEL } from "./gemini";
 import type { CoachMessageDoc, UserGoalsDoc, UserProgressDoc, DailyEntryDoc, EnergyEstimate } from "./types";
 import { ObjectId } from "mongodb";
 
@@ -157,7 +158,7 @@ export async function* streamCoachResponse(params: {
 
     const genAI = new GoogleGenerativeAI(params.apiKey ?? GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash-lite",
+        model: GEMINI_MODEL,
         systemInstruction: COACH_SYSTEM_PROMPT,
     });
 

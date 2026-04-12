@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
-import { genAI } from "@/lib/gemini";
+import { genAI, GEMINI_MODEL } from "@/lib/gemini";
 import { serializePeriodSummaryPublic } from "@/lib/serialize-public";
 import type { DailyEntryDoc, PeriodSummaryDoc, UserGoalsDoc } from "@/lib/types";
 
@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Call Gemini for the summary
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+        const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
         const prompt = `
 You are writing a **concise ${type} recap** for a habit-tracking user. Output **Markdown only**.
 

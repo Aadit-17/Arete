@@ -3,6 +3,7 @@ import { IngestResponse, IngestResponseSchema, EnergyEstimateSchema, EnergyEstim
 import type { StructuredDay } from "./types";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
+export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 
 // Initialize Gemini SDK
 export const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
@@ -221,7 +222,7 @@ export async function generateDailyIngest(params: {
     }
 
     const model = getGenAI(params.apiKey).getGenerativeModel({
-        model: "gemini-2.5-flash-lite",
+        model: GEMINI_MODEL,
         systemInstruction: INGEST_SYSTEM_PROMPT,
         generationConfig: {
             responseMimeType: "application/json",
@@ -249,7 +250,7 @@ ${params.rawMessage}
         // Finally validate with Zod to be sure
         return IngestResponseSchema.parse({
             ...rawJson,
-            ingestModel: "gemini-2.5-flash-lite"
+            ingestModel: GEMINI_MODEL
         });
     } catch (error) {
         console.error("[gemini] Ingest validation failed:", error);
@@ -272,7 +273,7 @@ export async function generateEnergyEstimate(params: {
     }
 
     const model = getGenAI(params.apiKey).getGenerativeModel({
-        model: "gemini-2.5-flash-lite",
+        model: GEMINI_MODEL,
         systemInstruction: ENERGY_SYSTEM_PROMPT,
         generationConfig: {
             responseMimeType: "application/json",
@@ -311,7 +312,7 @@ Use realistic portion sizes and MET tables. Provide clear assumptions in rationa
         const validated = EnergyEstimateSchema.parse(rawJson);
         return {
             ...validated,
-            model: "gemini-2.5-flash-lite",
+            model: GEMINI_MODEL,
             updatedAt: new Date().toISOString(),
         };
     } catch (error) {

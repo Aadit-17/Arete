@@ -30,7 +30,7 @@ function extractBearerToken(req: NextRequest): string | null {
 // requireUser — any authenticated user (pending OR approved)
 // ---------------------------------------------------------------------------
 
-const DEMO_EMAIL = "demo@example.com";
+const DEMO_EMAIL = process.env.DEMO_ACCOUNT_EMAIL || "demo@example.com";
 
 export interface AuthContext {
     userId: ObjectId;

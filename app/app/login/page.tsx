@@ -44,7 +44,9 @@ export default function LoginPage() {
         setDemoLoading(true);
         setError(null);
         try {
-            await doLogin('demo@example.com', 'demo123456');
+            const demoEmail = process.env.NEXT_PUBLIC_DEMO_ACCOUNT_EMAIL || 'demo@example.com';
+            const demoPassword = process.env.NEXT_PUBLIC_DEMO_ACCOUNT_PASSWORD || 'demo123456';
+            await doLogin(demoEmail, demoPassword);
         } catch (err: any) {
             setError(err.message);
         } finally {
