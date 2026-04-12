@@ -3,7 +3,7 @@ import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
 import { genAI } from "@/lib/gemini";
 import { serializePeriodSummaryPublic } from "@/lib/serialize-public";
-import type { DailyEntryDoc, PeriodSummaryDoc } from "@/lib/types";
+import type { DailyEntryDoc, PeriodSummaryDoc, UserGoalsDoc } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
 // Helpers for Date math (Sunday-start weeks)
@@ -81,29 +81,75 @@ export async function POST(req: NextRequest) {
 
     const db = await getDb();
 
-    // 1. Fetch all entries in this range
-    const entries = await db.collection<DailyEntryDoc>("daily_entries")
-        .find({ userId: auth.userId, dateKey: { $gte: rangeStart, $lte: rangeEnd } })
-        .sort({ dateKey: 1 })
-        .toArray();
+    const [entries, goalsDoc] = await Promise.all([
+        db.collection<DailyEntryDoc>("daily_entries")
+            .find({ userId: auth.userId, dateKey: { $gte: rangeStart, $lte: rangeEnd } })
+            .sort({ dateKey: 1 })
+            .toArray(),
+        db.collection<UserGoalsDoc>("user_goals").findOne({ userId: auth.userId }),
+    ]);
 
     if (entries.length === 0) {
         return apiError("No logs found for this period to summarize.", 404, "NO_DATA");
     }
 
+    const goalsBlock =
+        goalsDoc?.targets && Object.keys(goalsDoc.targets).length > 0
+            ? Object.entries(goalsDoc.targets)
+                  .map(([k, v]) => `- ${k.replace(/([A-Z])/g, " $1").trim()}: ${v}`)
+                  .join("\n")
+            : "(No goals saved — still judge the week on consistency and stated daily summaries only.)";
+
+    const logLines = entries.map((e) => {
+        const s = e.structured || {};
+        const parts = [
+            e.dailySummary || "—",
+            s.workout?.didSession
+                ? `workout: ${s.workout.sessions?.map((x: { label: string }) => x.label).join(", ") || "yes"}`
+                : s.workout ? "workout: rest" : null,
+            s.food?.description ? `food: ${s.food.description}` : null,
+            s.water?.amountMl != null ? `water_ml: ${s.water.amountMl}` : null,
+            s.sleep?.mainSleepHours != null
+                ? `sleep_h: ${s.sleep.mainSleepHours}${s.sleep.napHours ? `+nap ${s.sleep.napHours}` : ""}`
+                : null,
+            s.screenTimeMinutes != null ? `screen_min: ${s.screenTimeMinutes}` : null,
+            s.productivityScore != null ? `productivity/10: ${s.productivityScore}` : null,
+            e.energyEstimate?.caloriesInEstimate != null
+                ? `kcal_in~${e.energyEstimate.caloriesInEstimate}`
+                : null,
+        ].filter(Boolean);
+        return `[${e.dateKey}] ${parts.join(" | ")}`;
+    });
+
     // 2. Call Gemini for the summary
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
         const prompt = `
-Generate a ${type} summary for the user based on their nightly logs from ${rangeStart} to ${rangeEnd}.
-Focus on trends, wins, and areas where they might want to focus next.
-Be supportive and encouraging, like a personal coach. Use Markdown.
+You are writing a **concise ${type} recap** for a habit-tracking user. Output **Markdown only**.
 
-LOGS:
+Tone: direct, concrete, zero fluff—no buzzwords, no "journey", no cheerleading. Prefer numbers and dates from the data.
+
+Use exactly these sections (## headings):
+## What went well
+Bullet facts tied to the logs (sleep, workouts, food, water, screen, productivity, energy—only what the data supports).
+
+## What needs improvement
+Honest gaps vs patterns in the logs. If something wasn't logged, say "not enough data" instead of inventing.
+
+## Goals check-in
+Compare the week to the user's saved goals below. State where they met, missed, or had no signal.
+
+## Suggestions for next week
+3–6 **specific** actions (measurable or time-bound). Tie them to goals and to what actually happened this week.
+
+USER GOALS (may be partial):
+${goalsBlock}
+
+DAILY LOGS (${rangeStart} through ${rangeEnd}, chronological):
 ---
-${entries.map(e => `[${e.dateKey}] ${e.dailySummary}`).join("\n")}
+${logLines.join("\n")}
 ---
-    `.trim();
+`.trim();
 
         const result = await model.generateContent(prompt);
         const summaryText = result.response.text();

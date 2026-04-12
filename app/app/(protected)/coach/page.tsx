@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Sparkles, Orbit, MoreHorizontal, MessageSquare, Cpu, Atom, ChevronUp, Loader2, Trash2, Edit2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '@/lib/api-client';
+import { feedCoachSseBuffer } from '@/lib/sse-stream';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { GlassCard, GlassButton } from '@/components/ui/glass';
@@ -59,6 +60,7 @@ const UserMessage = ({ text }: { text: string }) => (
 
 export default function CoachPage() {
     const searchParams = useSearchParams();
+    const convIdFromUrl = searchParams.get('convId');
     const [conversations, setConversations] = useState<any[]>([]);
     const [convPage, setConvPage] = useState(1);
     const [hasMoreConvs, setHasMoreConvs] = useState(false);
@@ -83,24 +85,11 @@ export default function CoachPage() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const isAutoScrollRef = useRef(true);
     const messagesRef = useRef<any[]>([]);
-    const hasAutoSelectedRef = useRef(false);
-
+    const lastAppliedUrlConvId = useRef<string | null>(null);
     // Update ref whenever messages state changes
     useEffect(() => {
         messagesRef.current = messages;
     }, [messages]);
-
-    // Auto-select conversation from query param if provided
-    useEffect(() => {
-        const convId = searchParams.get('convId');
-        if (convId && conversations.length > 0) {
-            const conv = conversations.find((c) => c._id === convId);
-            if (conv) {
-                setActiveConv(conv);
-                hasAutoSelectedRef.current = true;
-            }
-        }
-    }, [searchParams, conversations]);
 
     const fetchConvs = useCallback(async (page: number, append = false) => {
         try {
@@ -109,9 +98,11 @@ export default function CoachPage() {
                 const data = await res.json();
                 setConversations(prev => append ? [...prev, ...data.conversations] : data.conversations);
                 setHasMoreConvs(data.has_next);
-                if (!append && data.conversations.length > 0 && !hasAutoSelectedRef.current) {
-                    setActiveConv(data.conversations[0]);
-                    hasAutoSelectedRef.current = true;
+                if (!append && data.conversations.length > 0) {
+                    const fromUrl =
+                        convIdFromUrl &&
+                        data.conversations.find((c: { _id: string }) => c._id === convIdFromUrl);
+                    setActiveConv(fromUrl || data.conversations[0]);
                 }
             }
         } catch (err) {
@@ -119,7 +110,7 @@ export default function CoachPage() {
         } finally {
             setLoadingConv(false);
         }
-    }, []);
+    }, [convIdFromUrl]);
 
     useEffect(() => {
         fetchConvs(1);
@@ -173,6 +164,21 @@ export default function CoachPage() {
             fetchMsgs(activeConv._id);
         }
     }, [activeConv, fetchMsgs]);
+
+    // Deep-link / hero handoff: apply ?convId= once when that conversation appears (avoid overriding manual picks while URL is stale).
+    useEffect(() => {
+        if (!convIdFromUrl) {
+            lastAppliedUrlConvId.current = null;
+            return;
+        }
+        if (!conversations.length) return;
+        if (lastAppliedUrlConvId.current === convIdFromUrl) return;
+        const conv = conversations.find((c) => c._id === convIdFromUrl);
+        if (conv) {
+            setActiveConv(conv);
+            lastAppliedUrlConvId.current = convIdFromUrl;
+        }
+    }, [convIdFromUrl, conversations]);
 
     const handleScroll = () => {
         if (!scrollRef.current) return;
@@ -228,6 +234,27 @@ export default function CoachPage() {
         setStreamingText('');
         isAutoScrollRef.current = true;
 
+        let sawDone = false;
+        let accumulatedText = '';
+        let finalized = false;
+
+        const finalizeAssistant = () => {
+            if (finalized) return;
+            finalized = true;
+            if (accumulatedText.trim()) {
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        role: 'assistant' as const,
+                        content: accumulatedText.trim(),
+                        timestamp: new Date(),
+                    },
+                ]);
+            }
+            setStreamingText('');
+            setStreaming(false);
+        };
+
         try {
             const res = await api.fetch(`/api/coach/conversations/${activeConv._id}/messages`, {
                 method: 'POST',
@@ -242,43 +269,49 @@ export default function CoachPage() {
 
             const decoder = new TextDecoder();
             let buffer = '';
-            let accumulatedText = '';
+
+            const onPayload = (data: { text?: string; done?: boolean; error?: string }) => {
+                if (data.error) console.error('Coach stream:', data.error);
+                if (data.text) {
+                    accumulatedText += data.text;
+                    setStreamingText(accumulatedText);
+                }
+                if (data.done) {
+                    sawDone = true;
+                    finalizeAssistant();
+                }
+            };
 
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
+                buffer = feedCoachSseBuffer(buffer, decoder.decode(value, { stream: true }), onPayload);
+            }
 
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || '';
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        try {
-                            const data = JSON.parse(line.slice(6));
-                            if (data.text) {
-                                accumulatedText += data.text;
-                                setStreamingText(accumulatedText);
-                            }
-                            if (data.done) {
-                                // Finalize assistant message
-                                const assistantMsg = {
-                                    role: 'assistant',
-                                    content: accumulatedText.trim(),
-                                    timestamp: new Date()
-                                };
-
-                                setMessages(prev => [...prev, assistantMsg]);
-                                setStreamingText('');
-                                setStreaming(false);
-                            }
-                        } catch (e) { /* ignore partial json */ }
+            if (buffer.trim()) {
+                for (const rawLine of buffer.split('\n')) {
+                    const line = rawLine.trim();
+                    if (!line.startsWith('data:')) continue;
+                    const jsonPart = line.slice(5).trimStart();
+                    if (!jsonPart) continue;
+                    try {
+                        onPayload(JSON.parse(jsonPart));
+                    } catch {
+                        /* incomplete */
                     }
                 }
             }
+
+            if (!sawDone && accumulatedText.trim()) {
+                finalizeAssistant();
+            }
         } catch (err) {
             console.error(err);
-            setStreaming(false);
+        } finally {
+            if (!finalized) {
+                setStreamingText('');
+                setStreaming(false);
+            }
         }
     };
 
@@ -524,8 +557,11 @@ export default function CoachPage() {
                                             )
                                         ))}
 
-                                        {streaming && streamingText && (
-                                            <BotMessage key="streaming-bot" text={streamingText} />
+                                        {streaming && (
+                                            <BotMessage
+                                                key="streaming-bot"
+                                                text={streamingText.length > 0 ? streamingText : '\u2026'}
+                                            />
                                         )}
 
                                         <div ref={messagesEndRef} />

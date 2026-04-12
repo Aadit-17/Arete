@@ -3,7 +3,7 @@ import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 
 import { CosmosBackground } from "@/components/ui/CosmosBackground";
-import { Navbar } from "@/components/ui/Navbar";
+import { AppChrome } from "@/components/layout/AppChrome";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -37,11 +37,7 @@ export default function RootLayout({
       <body className="antialiased selection:bg-cyan-500/20 selection:text-cyan-200 text-zinc-100 font-sans leading-relaxed tracking-[0.01em]">
         <CosmosBackground />
 
-        <Navbar />
-
-        <main className="pt-24 pb-32 lg:pb-0 min-h-screen relative z-10">
-          {children}
-        </main>
+        <AppChrome>{children}</AppChrome>
       </body>
     </html>
   );

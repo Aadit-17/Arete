@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api-client';
+import { useSidebarInset } from '@/components/layout/AppChrome';
 import { LogOut, Home, Plus, MessageSquare, RefreshCcw, PanelLeft } from 'lucide-react';
 
 export function Navbar() {
     const pathname = usePathname();
     const [mounted, setMounted] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { sidebarExpanded: mobileMenuOpen, setSidebarExpanded: setMobileMenuOpen } = useSidebarInset();
 
     useEffect(() => {
         setMounted(true);

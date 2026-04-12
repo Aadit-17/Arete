@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api-client';
+import { readCoachSseResponseToCompletion } from '@/lib/sse-stream';
 import { Send } from 'lucide-react';
 
 export const AnimatedHero = () => {
@@ -42,8 +43,14 @@ export const AnimatedHero = () => {
             });
 
             if (!msgResponse.ok) {
-                const error = await msgResponse.json();
-                throw new Error(error.error || 'Failed to send message');
+                const error = await msgResponse.json().catch(() => ({}));
+                throw new Error((error as { error?: string }).error || 'Failed to send message');
+            }
+
+            // Wait for the SSE stream to finish so the assistant reply is persisted before we navigate.
+            const { error: streamErr } = await readCoachSseResponseToCompletion(msgResponse);
+            if (streamErr) {
+                console.warn('Coach stream warning:', streamErr);
             }
 
             router.push(`/coach?convId=${conversationId}`);
