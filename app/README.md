@@ -1,104 +1,96 @@
-# Tracker Agentic App
+# Arete — Your Personal Agent for Excellence
 
-> **Stack:** Next.js App Router · TypeScript · MongoDB · Gemini (server-side only)
-
-A personal body care & self-improvement tracker powered by two AI agents (ingest + coach).
+Arete is an AI-powered personal wellness tracker that helps you log your day, understand your energy, and get personalized coaching—all in natural language.
 
 ---
 
-## Quick Start (Local Dev)
+## What is Arete?
 
-### Prerequisites
+Instead of filling out spreadsheets or fitness app forms, you simply **tell Arete about your day**. You might write:
 
-- **Node 20+** and **npm**
-- **MongoDB** running locally: `mongod` (default port 27017)
+> "Had breakfast with oatmeal and berries, drank 2L of water, ran 5km in 32 min, felt great all day."
 
-### 1. Install dependencies
+Arete **understands what you wrote**, extracts the key data (meals, workouts, water intake), and shows you:
+- **Daily Summary:** A natural language recap of your day
+- **Energy Estimate:** Approximate calories consumed vs. burned, with confidence level
+- **Structured Data:** All the information organized for tracking over time
 
-```bash
-cd tracker-agentic-app/app
-npm install
-```
-
-### 2. Configure environment
-
-```bash
-cp .env.example .env.local
-# Edit .env.local — the defaults work for local MongoDB
-```
-
-Key vars:
-
-| Variable | Default | Notes |
-|----------|---------|-------|
-| `MONGO_URI` | `mongodb://127.0.0.1:27017/tracker` | Switch to Atlas URI for production |
-| `JWT_ACCESS_SECRET` | *(must set)* | Min 32-char random string |
-| `JWT_REFRESH_SECRET` | *(must set)* | Separate secret from access |
-| `GEMINI_API_KEY` | *(plan 02+)* | Not required for plan 01 |
-
-### 3. Run the dev server
-
-```bash
-npm run dev
-# App at http://localhost:3000
-```
+Then, when you need support or advice, you can chat with your **AI Coach**—a streaming conversational agent that reflects on your habits and offers personalized guidance.
 
 ---
 
-## Creating and approving a user
+## Core Features
 
-1. **Register** via `POST /api/auth/register` (or the UI form in plan 04)
-2. New accounts are **`pending`** — they see the demo dashboard only
-3. **Approve manually** in MongoDB Compass / Atlas: set `status: "approved"` in `tracker.users`
+### 📝 **Daily Log**
+- Write about your day in natural language (no forms to fill)
+- AI extracts: meals, water intake, workouts, mood, highlights
+- See your data automatically structured and saved
+- Navigate to past days or update existing logs
+- Timezone-aware (always uses your local date)
 
----
+### ⚡ **Energy Tracking**
+- AI estimates calories in/out based on what you logged
+- Confidence indicators (high/medium/low) based on how much detail you provided
+- See the AI's reasoning for its estimates
+- Track energy balance over time
 
-## API Overview (Plan 01)
+### 🎯 **Dashboard**
+- Quick overview of your recent days
+- Energy trends at a glance
+- Progress toward your goals
+- Quick access to log a new day or chat with your coach
 
-### Auth
+### 💬 **AI Coach**
+- Have real conversations about your wellness journey
+- Get feedback on your habits, energy, and goals
+- The coach reads your past logs for context
+- Streaming responses with smooth typewriter effect
+- Build an ongoing conversation history
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| `POST` | `/api/auth/register` | email + username + password → pending account |
-| `POST` | `/api/auth/login` | Credentials → access JWT + httpOnly refresh cookie |
-| `POST` | `/api/auth/refresh` | Rotate refresh → new access token |
-| `POST` | `/api/auth/logout` | Revoke refresh token + clear cookie |
-| `GET`  | `/api/me` | Current user profile (any auth status) |
-
-### User Data (approved only)
-
-| Method | Route | Description |
-|--------|-------|-------------|
-| `GET/PUT` | `/api/goals` | Read/upsert workout, reading, water goals |
-| `GET` | `/api/daily-entries` | Read entries by dateKey or date range |
-| `GET/PUT` | `/api/progress` | Progress narrative (LLM generation in plan 03) |
-| `GET/POST` | `/api/summaries` | Paginated summaries / 501 stub |
-
-### Coach (approved only)
-
-| Method | Route | Description |
-|--------|-------|-------------|
-| `GET/POST` | `/api/coach/conversations` | List (page-paginated) / create |
-| `GET/PATCH/DELETE` | `/api/coach/conversations/:id` | Single conversation ops |
-| `GET/POST` | `/api/coach/conversations/:id/messages` | Cursor-paginated messages / send |
+### 🎓 **Demo Mode**
+- Try Arete risk-free with a shared demo account
+- Pre-loaded with 10 days of sample data
+- No sign-up required—just click "Try Demo"
+- Great way to explore before committing
 
 ---
 
-## Security notes
+## How It Works
 
-- **userId** resolves **only** from the verified JWT — never from the request body
-- Refresh tokens are **hashed** (SHA-256) before storage — raw token never persisted
-- Refresh token **rotation** on every refresh call
-- `pending` users get **403** on all approved-only routes
-- Rate limiting on login (10/15 min) and register (5/15 min) per IP
+### 1. **Log Your Day**
+Go to the Daily Log and describe your day however feels natural. Include meals, water, workouts, mood—whatever matters to you.
+
+### 2. **AI Parses Your Entry**
+Behind the scenes, Gemini AI reads what you wrote and extracts structured data. It understands context (not just keywords) and asks clarifying questions if needed.
+
+### 3. **See Your Summary & Estimates**
+Your entry is now saved with:
+- A daily summary in your own words
+- Energy estimates (calories in/out)
+- Structured data for tracking
+
+### 4. **Chat with Your Coach**
+When you're ready, start a conversation with your AI Coach. It reads your logs and offers personalized insights, encouragement, and advice.
+
+### 5. **Track Progress**
+Check your dashboard anytime to see trends, energy balance, and how you're doing against your goals.
 
 ---
 
-## Plans
+## Key Principles
 
-| # | File | Status |
-|---|------|--------|
-| 1 | `plans/01-backend-plan.md` | ✅ Done |
-| 2 | `plans/02-ingest-agent-plan.md` | 🔜 Next |
-| 3 | `plans/03-coach-agent-plan.md` | 🔜 Parallel with 02 |
-| 4 | `plans/04-frontend-plan.md` | 🔜 After 02 + 03 |
+- **Natural Language First:** No forms, dropdowns, or data entry friction—just write
+- **AI-Powered:** Gemini API does the heavy lifting of understanding and structuring
+- **Privacy:** Your data is yours. No ads, no tracking, no data selling
+- **Timezone-Smart:** All dates are local to you, no UTC confusion
+- **Fast & Responsive:** Built with Next.js, Framer Motion animations, glassmorphic design
+
+---
+
+## Getting Started
+
+1. **Sign up** with your email (or try the demo)
+2. **Log a day** — write about meals, water, workouts, mood
+3. **Explore** your structured data and energy estimates
+4. **Chat** with your coach for personalized guidance
+5. **Track** your progress over time on the dashboard
