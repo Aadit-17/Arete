@@ -4,7 +4,6 @@ import type { CoachMessageDoc, UserGoalsDoc, UserProgressDoc, DailyEntryDoc, Ene
 import { ObjectId } from "mongodb";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const COACH_SYSTEM_PROMPT = `
 You are "Arete", the user's personal agent within the Arete platform. Named after the Greek concept of excellence and virtue, you help users see themselves with clarity and pursue their path to personal excellence through genuine conversation and data-informed insights.
@@ -152,9 +151,11 @@ export async function assembleCoachContext(userId: ObjectId, limit: number = 7) 
 export async function* streamCoachResponse(params: {
     userId: ObjectId;
     messages: CoachMessageDoc[];
+    apiKey?: string;
 }) {
     const contextPack = await assembleCoachContext(params.userId);
 
+    const genAI = new GoogleGenerativeAI(params.apiKey ?? GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
         model: "gemini-2.5-flash-lite",
         systemInstruction: COACH_SYSTEM_PROMPT,

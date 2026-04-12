@@ -1,14 +1,19 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sparkles, Calendar, Clock, PenTool, ChevronDown } from 'lucide-react';
+import { Send, Sparkles, Calendar, Clock, PenTool, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '@/lib/api-client';
 import { GlassCard, GlassInput, GlassBadge } from '@/components/ui/glass';
 
 export default function LogPage() {
-    const [dateKey, setDateKey] = useState(new Date().toISOString().split('T')[0]);
+    const dateInputRef = useRef<HTMLInputElement>(null);
+
+    const toLocalDateKey = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    const [dateKey, setDateKey] = useState(() => toLocalDateKey(new Date()));
     const [rawMessage, setRawMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -74,6 +79,16 @@ export default function LogPage() {
 
     const timezone = typeof window !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'UTC';
 
+    const todayKey = toLocalDateKey(new Date());
+    const isToday = dateKey === todayKey;
+    const displayDate = new Date(dateKey + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    const shiftDay = (delta: number) => {
+        const d = new Date(dateKey + 'T00:00:00');
+        d.setDate(d.getDate() + delta);
+        setDateKey(toLocalDateKey(d));
+    };
+
     return (
         <div className="max-w-4xl mx-auto px-6 py-8 animate-fade-in relative z-10">
 
@@ -97,7 +112,7 @@ export default function LogPage() {
                     }}
                     className="text-5xl md:text-6xl font-bold tracking-tight"
                 >
-                    Log <span className="text-zinc-500 font-mono tracking-tighter">{dateKey}</span>
+                    Log <span className="text-zinc-500 font-mono tracking-tighter">{isToday ? 'Today' : displayDate}</span>
                 </motion.h1>
             </header>
 
@@ -114,16 +129,49 @@ export default function LogPage() {
                             <GlassCard className="p-12 space-y-6">
 
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-white/[0.05]">
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2 glass-panel-sm backdrop-blur-xl px-4 py-2">
-                                            <Calendar size={14} className="text-aura-secondary" />
-                                            <input
-                                                type="date"
-                                                value={dateKey}
-                                                onChange={(e) => setDateKey(e.target.value)}
-                                                className="bg-transparent text-xs font-bold text-zinc-300 outline-none cursor-pointer uppercase tracking-widest"
-                                            />
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center glass-panel-sm">
+                                            <button
+                                                type="button"
+                                                onClick={() => shiftDay(-1)}
+                                                className="px-3 py-2 text-zinc-500 hover:text-zinc-200 transition-colors border-r border-white/[0.06]"
+                                            >
+                                                <ChevronLeft size={14} />
+                                            </button>
+                                            <div
+                                                className="flex items-center gap-2 px-4 py-2 cursor-pointer"
+                                                onClick={() => dateInputRef.current?.showPicker()}
+                                            >
+                                                <Calendar size={13} className="text-aura-secondary flex-shrink-0" />
+                                                <span className="text-xs font-bold text-zinc-200 tracking-wide whitespace-nowrap">
+                                                    {displayDate}
+                                                </span>
+                                                <input
+                                                    ref={dateInputRef}
+                                                    type="date"
+                                                    value={dateKey}
+                                                    onChange={(e) => setDateKey(e.target.value)}
+                                                    className="sr-only"
+                                                />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => shiftDay(1)}
+                                                disabled={isToday}
+                                                className="px-3 py-2 text-zinc-500 hover:text-zinc-200 transition-colors border-l border-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed"
+                                            >
+                                                <ChevronRight size={14} />
+                                            </button>
                                         </div>
+                                        {!isToday && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setDateKey(todayKey)}
+                                                className="text-[11px] font-bold text-aura-accent/70 hover:text-aura-accent transition-colors uppercase tracking-widest"
+                                            >
+                                                Today
+                                            </button>
+                                        )}
 
                                         <button
                                             type="button"

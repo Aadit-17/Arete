@@ -119,6 +119,10 @@ export async function POST(req: NextRequest, { params }: Params) {
         .limit(30)
         .toArray();
 
+    const geminiKey = auth.isDemo
+        ? (process.env.GEMINI_DEMO_KEY ?? process.env.GEMINI_API_KEY!)
+        : process.env.GEMINI_API_KEY!;
+
     // 3. Prepare streaming response
     const stream = new ReadableStream({
         async start(controller) {
@@ -129,6 +133,7 @@ export async function POST(req: NextRequest, { params }: Params) {
                 const coachStream = streamCoachResponse({
                     userId: auth.userId,
                     messages: history,
+                    apiKey: geminiKey,
                 });
 
                 for await (const chunk of coachStream) {
@@ -158,7 +163,19 @@ export async function POST(req: NextRequest, { params }: Params) {
 
             } catch (err: any) {
                 console.error("[api/coach] Streaming error:", err);
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: "Streaming failed." })}\n\n`));
+
+                const is429 = err?.status === 429 ||
+                    err?.message?.includes("429") ||
+                    err?.message?.toLowerCase().includes("resource_exhausted") ||
+                    err?.message?.toLowerCase().includes("too many requests");
+
+                const errorMsg = is429
+                    ? (auth.isDemo
+                        ? "The demo account has hit its AI quota for now. This is a shared demo key with limited capacity — try again in a minute, or create your own account for full access."
+                        : "AI quota exceeded. Please try again shortly.")
+                    : "Streaming failed.";
+
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: errorMsg, code: is429 ? "RATE_LIMITED" : "STREAM_ERROR" })}\n\n`));
                 controller.close();
             }
         },

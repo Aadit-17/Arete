@@ -7,6 +7,10 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
 // Initialize Gemini SDK
 export const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
+function getGenAI(apiKey?: string) {
+    return apiKey ? new GoogleGenerativeAI(apiKey) : genAI;
+}
+
 // Define the response schema in the JSON format Gemini expects
 const schema = {
     type: SchemaType.OBJECT,
@@ -209,12 +213,14 @@ export async function generateDailyIngest(params: {
     dateKey: string;
     timezone?: string;
     userGoalsSummary?: string;
+    apiKey?: string;
 }): Promise<IngestResponse> {
-    if (!GEMINI_API_KEY) {
+    const key = params.apiKey ?? GEMINI_API_KEY;
+    if (!key) {
         throw new Error("GEMINI_API_KEY is not defined in environment");
     }
 
-    const model = genAI.getGenerativeModel({
+    const model = getGenAI(params.apiKey).getGenerativeModel({
         model: "gemini-2.5-flash-lite",
         systemInstruction: INGEST_SYSTEM_PROMPT,
         generationConfig: {
@@ -258,12 +264,14 @@ export async function generateEnergyEstimate(params: {
     structured: StructuredDay;
     rawMessage: string;
     dateKey: string;
+    apiKey?: string;
 }): Promise<EnergyEstimateResult & { model: string; updatedAt: string }> {
-    if (!GEMINI_API_KEY) {
+    const key = params.apiKey ?? GEMINI_API_KEY;
+    if (!key) {
         throw new Error("GEMINI_API_KEY is not defined in environment");
     }
 
-    const model = genAI.getGenerativeModel({
+    const model = getGenAI(params.apiKey).getGenerativeModel({
         model: "gemini-2.5-flash-lite",
         systemInstruction: ENERGY_SYSTEM_PROMPT,
         generationConfig: {

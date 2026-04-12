@@ -47,6 +47,10 @@ export async function POST(req: NextRequest) {
             .join(", ");
     }
 
+    const geminiKey = auth.isDemo
+        ? (process.env.GEMINI_DEMO_KEY ?? process.env.GEMINI_API_KEY!)
+        : process.env.GEMINI_API_KEY!;
+
     try {
         // 1. Call Gemini to parse the unstructured message
         const ingestResult = await generateDailyIngest({
@@ -54,6 +58,7 @@ export async function POST(req: NextRequest) {
             dateKey,
             timezone: (timezoneAtEntry as string) || "UTC",
             userGoalsSummary,
+            apiKey: geminiKey,
         });
 
         // 2. Prepare the document for persistence
@@ -76,6 +81,7 @@ export async function POST(req: NextRequest) {
                 structured: ingestResult.structured,
                 rawMessage,
                 dateKey,
+                apiKey: geminiKey,
             });
             doc.energyEstimate = energyEstimate;
         } catch (energyError) {
@@ -102,6 +108,21 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error("[api/ingest] Error during ingestion:", error);
+
+        const is429 = error?.status === 429 ||
+            error?.message?.includes("429") ||
+            error?.message?.toLowerCase().includes("resource_exhausted") ||
+            error?.message?.toLowerCase().includes("too many requests");
+
+        if (is429) {
+            return apiError(
+                auth.isDemo
+                    ? "The demo account has hit its AI quota for now. This is a shared demo key with limited capacity — try again in a minute, or create your own account to get full access."
+                    : "AI quota exceeded. Please try again shortly.",
+                429,
+                "RATE_LIMITED"
+            );
+        }
 
         // In case of Zod or business validation error from GEMINI wrapper
         return apiError(

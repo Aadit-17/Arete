@@ -86,6 +86,9 @@ export default function CoachPage() {
     const isAutoScrollRef = useRef(true);
     const messagesRef = useRef<any[]>([]);
     const lastAppliedUrlConvId = useRef<string | null>(null);
+    // Typewriter: received text lives in a ref; interval drips it into state
+    const pendingTextRef = useRef('');
+    const typewriterTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     // Update ref whenever messages state changes
     useEffect(() => {
         messagesRef.current = messages;
@@ -226,34 +229,48 @@ export default function CoachPage() {
         e.preventDefault();
         if (!input.trim() || streaming || !activeConv) return;
 
+        // Clear any leftover typewriter from a previous message
+        if (typewriterTimerRef.current) {
+            clearInterval(typewriterTimerRef.current);
+            typewriterTimerRef.current = null;
+        }
+
         const userMsg = { role: 'user', content: input, timestamp: new Date() };
         setMessages(prev => [...prev, userMsg]);
         const currentInput = input;
         setInput('');
         setStreaming(true);
         setStreamingText('');
+        pendingTextRef.current = '';
         isAutoScrollRef.current = true;
 
-        let sawDone = false;
-        let accumulatedText = '';
+        let streamEnded = false;
         let finalized = false;
 
         const finalizeAssistant = () => {
             if (finalized) return;
             finalized = true;
-            if (accumulatedText.trim()) {
-                setMessages((prev) => [
-                    ...prev,
-                    {
-                        role: 'assistant' as const,
-                        content: accumulatedText.trim(),
-                        timestamp: new Date(),
-                    },
-                ]);
+            const full = pendingTextRef.current.trim();
+            if (full) {
+                setMessages(prev => [...prev, { role: 'assistant' as const, content: full, timestamp: new Date() }]);
             }
             setStreamingText('');
             setStreaming(false);
         };
+
+        // Typewriter: 2 chars per 16 ms ≈ 125 chars/sec — smooth but visible
+        let displayPos = 0;
+        typewriterTimerRef.current = setInterval(() => {
+            const target = pendingTextRef.current;
+            if (displayPos < target.length) {
+                displayPos = Math.min(displayPos + 2, target.length);
+                setStreamingText(target.slice(0, displayPos));
+            } else if (streamEnded) {
+                clearInterval(typewriterTimerRef.current!);
+                typewriterTimerRef.current = null;
+                finalizeAssistant();
+            }
+        }, 16);
 
         try {
             const res = await api.fetch(`/api/coach/conversations/${activeConv._id}/messages`, {
@@ -272,14 +289,8 @@ export default function CoachPage() {
 
             const onPayload = (data: { text?: string; done?: boolean; error?: string }) => {
                 if (data.error) console.error('Coach stream:', data.error);
-                if (data.text) {
-                    accumulatedText += data.text;
-                    setStreamingText(accumulatedText);
-                }
-                if (data.done) {
-                    sawDone = true;
-                    finalizeAssistant();
-                }
+                if (data.text) pendingTextRef.current += data.text;
+                if (data.done) streamEnded = true;
             };
 
             while (true) {
@@ -294,20 +305,17 @@ export default function CoachPage() {
                     if (!line.startsWith('data:')) continue;
                     const jsonPart = line.slice(5).trimStart();
                     if (!jsonPart) continue;
-                    try {
-                        onPayload(JSON.parse(jsonPart));
-                    } catch {
-                        /* incomplete */
-                    }
+                    try { onPayload(JSON.parse(jsonPart)); } catch { /* incomplete */ }
                 }
             }
 
-            if (!sawDone && accumulatedText.trim()) {
-                finalizeAssistant();
-            }
+            // Stream reader closed — mark done so the typewriter can finalize
+            streamEnded = true;
+
         } catch (err) {
             console.error(err);
-        } finally {
+            clearInterval(typewriterTimerRef.current!);
+            typewriterTimerRef.current = null;
             if (!finalized) {
                 setStreamingText('');
                 setStreaming(false);

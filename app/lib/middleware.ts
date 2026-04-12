@@ -30,9 +30,12 @@ function extractBearerToken(req: NextRequest): string | null {
 // requireUser — any authenticated user (pending OR approved)
 // ---------------------------------------------------------------------------
 
+const DEMO_EMAIL = "demo@example.com";
+
 export interface AuthContext {
     userId: ObjectId;
     status: "pending" | "approved";
+    isDemo: boolean;
 }
 
 export async function requireUser(req: NextRequest): Promise<AuthContext | NextResponse> {
@@ -58,7 +61,7 @@ export async function requireUser(req: NextRequest): Promise<AuthContext | NextR
     const user = await db.collection<UserDoc>("users").findOne({ _id: userId });
     if (!user) return apiError("User not found", 401, "USER_NOT_FOUND");
 
-    return { userId, status: user.status };
+    return { userId, status: user.status, isDemo: user.email === DEMO_EMAIL };
 }
 
 // ---------------------------------------------------------------------------
@@ -67,7 +70,7 @@ export async function requireUser(req: NextRequest): Promise<AuthContext | NextR
 
 export async function requireApprovedUser(
     req: NextRequest
-): Promise<{ userId: ObjectId } | NextResponse> {
+): Promise<{ userId: ObjectId; isDemo: boolean } | NextResponse> {
     const result = await requireUser(req);
     if (result instanceof NextResponse) return result;
     if (result.status !== "approved") {
@@ -77,5 +80,5 @@ export async function requireApprovedUser(
             "ACCOUNT_PENDING"
         );
     }
-    return { userId: result.userId };
+    return { userId: result.userId, isDemo: result.isDemo };
 }

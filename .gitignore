@@ -7,6 +7,8 @@
 # -----------------------------------------------------------------------------
 plans/
 daily-tracker/
+stitch/
+arete-celestial-tracker/
 *.md
 !README.md
 !**/README.md
@@ -40,6 +42,7 @@ app/.turbo/
 .env.test.local
 .env.production.local
 .env*.local
+.env.example
 *.pem
 *.p12
 *.key
@@ -99,3 +102,10 @@ Desktop.ini
 *.tgz
 *.zip
 .vercel
+
+# Unused public assets (Next.js defaults, not used in app)
+app/public/file.svg
+app/public/globe.svg
+app/public/next.svg
+app/public/vercel.svg
+app/public/window.svg
