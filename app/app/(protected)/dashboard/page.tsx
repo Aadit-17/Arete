@@ -37,6 +37,7 @@ import {
     ResponsiveContainer
 } from 'recharts';
 import { api } from '@/lib/api-client';
+import { useProtectedUser } from '@/contexts/ProtectedUserContext';
 import { GlassCard, StatCard, GlassBadge } from '@/components/ui/glass';
 import { WorkoutHeatmap } from '@/components/ui/WorkoutHeatmap';
 import { AnimatedHero } from '@/components/ui/AnimatedHero';
@@ -116,7 +117,7 @@ const EntryCard = ({ entry, isLatest = false, isToday = false, onClick }: any) =
 };
 
 export default function DashboardPage() {
-    const [user, setUser] = useState<any>(null);
+    const { user } = useProtectedUser();
     const [welcome, setWelcome] = useState<any>(null);
     const [entries, setEntries] = useState<any[]>([]);
     const [goals, setGoals] = useState<{ targets: any; notes?: string } | null>(null);
@@ -140,14 +141,12 @@ export default function DashboardPage() {
 
     const fetchData = async () => {
         try {
-            const [meRes, welcomeRes, entriesRes, goalsRes, summariesRes] = await Promise.all([
-                api.fetch('/api/me'),
+            const [welcomeRes, entriesRes, goalsRes, summariesRes] = await Promise.all([
                 api.fetch('/api/me/welcome'),
                 api.fetch('/api/daily-entries'),
                 api.fetch('/api/goals'),
                 api.fetch('/api/summaries?limit=1'),
             ]);
-            if (meRes.ok) setUser(await meRes.json());
             if (welcomeRes.ok) setWelcome(await welcomeRes.json());
             if (entriesRes.ok) {
                 const data = await entriesRes.json();

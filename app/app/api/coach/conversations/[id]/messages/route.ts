@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
+import { serializeCoachMessagePublic } from "@/lib/serialize-public";
 import type { CoachConversationDoc, CoachMessageDoc } from "@/lib/types";
 import { streamCoachResponse } from "@/lib/coach";
 
@@ -70,12 +71,7 @@ export async function GET(req: NextRequest, { params }: Params) {
     const next_cursor = has_more ? messages[messages.length - 1]._id!.toString() : null;
 
     return NextResponse.json({
-        messages: messages.map((m) => ({
-            ...m,
-            _id: m._id?.toString(),
-            conversationId: m.conversationId?.toString(),
-            userId: m.userId?.toString(),
-        })),
+        messages: messages.map(serializeCoachMessagePublic),
         next_cursor,
         has_more,
         limit,

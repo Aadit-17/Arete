@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
+import { serializeCoachConversationPublic } from "@/lib/serialize-public";
 import type { CoachConversationDoc } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -35,7 +36,7 @@ export async function GET(req: NextRequest) {
     const total_pages = Math.ceil(total / limit);
 
     return NextResponse.json({
-        conversations: docs.map(serializeConversation),
+        conversations: docs.map(serializeCoachConversationPublic),
         page,
         limit,
         total,
@@ -79,10 +80,3 @@ export async function POST(req: NextRequest) {
     );
 }
 
-function serializeConversation(d: CoachConversationDoc) {
-    return {
-        ...d,
-        _id: d._id?.toString(),
-        userId: d.userId?.toString(),
-    };
-}

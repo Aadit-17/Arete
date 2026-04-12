@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
 import { getDb } from "@/lib/db";
+import { publicEnergyEstimate } from "@/lib/serialize-public";
 import { generateDailyIngest, generateEnergyEstimate } from "@/lib/gemini";
 import type { DailyEntryDoc, UserGoalsDoc } from "@/lib/types";
 import { IngestResponseSchema } from "@/lib/schemas";
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
                 dateKey: doc.dateKey,
                 dailySummary: doc.dailySummary,
                 structured: doc.structured,
-                energyEstimate: doc.energyEstimate,
+                energyEstimate: publicEnergyEstimate(doc.energyEstimate),
             },
         }, { status: 200 });
 

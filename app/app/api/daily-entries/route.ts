@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
+import { serializeDailyEntryPublic } from "@/lib/serialize-public";
 import type { DailyEntryDoc } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -24,7 +25,7 @@ export async function GET(req: NextRequest) {
     if (dateKey) {
         const entry = await col.findOne({ userId: auth.userId, dateKey });
         if (!entry) return NextResponse.json({ entry: null });
-        return NextResponse.json({ entry: serializeEntry(entry) });
+        return NextResponse.json({ entry: serializeDailyEntryPublic(entry) });
     }
 
     if (from && to) {
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
             .sort({ dateKey: -1 })
             .limit(90)
             .toArray();
-        return NextResponse.json({ entries: entries.map(serializeEntry) });
+        return NextResponse.json({ entries: entries.map(serializeDailyEntryPublic) });
     }
 
     // Default: latest 30 entries
@@ -42,13 +43,5 @@ export async function GET(req: NextRequest) {
         .sort({ dateKey: -1 })
         .limit(30)
         .toArray();
-    return NextResponse.json({ entries: entries.map(serializeEntry) });
-}
-
-function serializeEntry(e: DailyEntryDoc) {
-    return {
-        ...e,
-        _id: e._id?.toString(),
-        userId: e.userId?.toString(),
-    };
+    return NextResponse.json({ entries: entries.map(serializeDailyEntryPublic) });
 }

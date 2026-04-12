@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
+import { serializeCoachConversationPublic } from "@/lib/serialize-public";
 import type { CoachConversationDoc } from "@/lib/types";
 
 type Params = { params: Promise<{ id: string }> };
@@ -28,11 +29,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 
     if (!doc) return apiError("Conversation not found", 404);
 
-    return NextResponse.json({
-        ...doc,
-        _id: doc._id?.toString(),
-        userId: doc.userId?.toString(),
-    });
+    return NextResponse.json(serializeCoachConversationPublic(doc));
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {

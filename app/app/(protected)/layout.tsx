@@ -1,63 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { api } from '@/lib/api-client';
+import { ProtectedUserProvider } from '@/contexts/ProtectedUserContext';
 
-export default function ProtectedLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
+function ProtectedMotionShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            if (!api.getToken()) {
-                router.push('/login');
-                return;
-            }
-
-            try {
-                const res = await api.fetch('/api/me');
-                if (!res.ok) {
-                    router.push('/login');
-                    return;
-                }
-
-                const user = await res.json();
-                const isPending = user.status === 'pending';
-                const restrictedPaths = ['/log', '/coach'];
-                const isRestricted = restrictedPaths.some(p => pathname.startsWith(p));
-
-                if (isPending && isRestricted) {
-                    router.push('/dashboard');
-                    return;
-                }
-            } catch (err) {
-                router.push('/login');
-                return;
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkAuth();
-    }, [router, pathname]);
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[80vh]">
-                <div className="animate-pulse text-aura-accent text-sm uppercase tracking-widest font-light">
-                    Securing Connection...
-                </div>
-            </div>
-        );
-    }
-
     return (
         <motion.div
             key={pathname}
@@ -67,5 +15,17 @@ export default function ProtectedLayout({
         >
             {children}
         </motion.div>
+    );
+}
+
+export default function ProtectedLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <ProtectedUserProvider>
+            <ProtectedMotionShell>{children}</ProtectedMotionShell>
+        </ProtectedUserProvider>
     );
 }

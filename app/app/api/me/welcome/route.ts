@@ -17,7 +17,9 @@ export async function GET(req: NextRequest) {
 
     const db = await getDb();
 
-    const [latestEntry, lastSummary, goals, allEntries] = await Promise.all([
+    const STREAK_DATEKEY_CAP = 800;
+
+    const [latestEntry, lastSummary, goals, dateKeyRows] = await Promise.all([
         db.collection<DailyEntryDoc>("daily_entries")
             .findOne({ userId: auth.userId }, { sort: { dateKey: -1 } }),
         db.collection<PeriodSummaryDoc>("period_summaries")
@@ -26,15 +28,17 @@ export async function GET(req: NextRequest) {
             .findOne({ userId: auth.userId }),
         db.collection<DailyEntryDoc>("daily_entries")
             .find({ userId: auth.userId })
+            .project({ dateKey: 1, _id: 0 })
             .sort({ dateKey: -1 })
+            .limit(STREAK_DATEKEY_CAP)
             .toArray(),
     ]);
 
     // Calculate consecutive streak backwards from latest entry
     let streak = 0;
-    if (latestEntry && allEntries.length > 0) {
-        const sortedDates = allEntries
-            .map(e => e.dateKey)
+    if (latestEntry && dateKeyRows.length > 0) {
+        const sortedDates = dateKeyRows
+            .map((e) => e.dateKey)
             .sort()
             .reverse();
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { requireApprovedUser, apiError } from "@/lib/middleware";
 import { genAI } from "@/lib/gemini";
+import { serializePeriodSummaryPublic } from "@/lib/serialize-public";
 import type { DailyEntryDoc, PeriodSummaryDoc } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -52,11 +53,7 @@ export async function GET(req: NextRequest) {
     const total_pages = Math.ceil(total / limit);
 
     return NextResponse.json({
-        summaries: docs.map((d) => ({
-            ...d,
-            _id: d._id?.toString(),
-            userId: d.userId?.toString(),
-        })),
+        summaries: docs.map(serializePeriodSummaryPublic),
         page,
         limit,
         total,
