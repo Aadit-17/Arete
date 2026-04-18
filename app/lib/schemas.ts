@@ -5,8 +5,23 @@ import { z } from "zod";
 // Matches TRACKER_APP_CONTEXT.md §15.2
 // ---------------------------------------------------------------------------
 
+export const MacroSchema = z.object({
+    proteinG: z.number().describe("Protein in grams"),
+    carbsG: z.number().describe("Carbohydrates in grams"),
+    fatsG: z.number().describe("Fats in grams"),
+    fiberG: z.number().describe("Fiber in grams"),
+    vitaminC: z.string().optional().describe("Vitamin C content"),
+    vitaminD: z.string().optional().describe("Vitamin D content"),
+    iron: z.string().optional().describe("Iron content"),
+    calcium: z.string().optional().describe("Calcium content"),
+    potassium: z.string().optional().describe("Potassium content"),
+    magnesium: z.string().optional().describe("Magnesium content"),
+});
+
 export const FoodSchema = z.object({
     description: z.string().describe("Meal and intake description for the day"),
+    macros: MacroSchema.describe("Estimated macro and micronutrient breakdown"),
+    macroSummary: z.string().describe("Summary of macro balance and recommendations"),
 });
 
 export const WaterSchema = z.object({
@@ -14,9 +29,16 @@ export const WaterSchema = z.object({
     note: z.string().optional(),
 });
 
+export const SleepSchema = z.object({
+    mainSleepHours: z.number().describe("Main sleep duration in hours"),
+    napHours: z.number().optional().describe("Nap duration in hours"),
+    sleepQuality: z.number().min(1).max(10).optional().describe("Sleep quality rating 1-10"),
+    notes: z.string().optional().describe("Additional sleep notes"),
+});
+
 export const WorkoutSessionSchema = z.object({
     label: z.string().describe("Name/type of workout"),
-    durationMin: z.number().int().optional().describe("Duration in minutes"),
+    durationMin: z.number().int().describe("Duration in minutes"),
 });
 
 export const WorkoutSchema = z.object({
@@ -37,15 +59,16 @@ export const CodingSchema = z.object({
 
 /**
  * The structured payload representing the dimensions being tracked.
- * 
+ *
  * Rules (§4.1):
- * - Food & water: Omit fields if not mentioned (don't use nulls).
- * - Others: If absent from message, treat as false/empty (did not do).
+ * - Food, water, sleep, screen time, scores: ALWAYS extract and estimate if ANY data is mentioned.
+ * - Reading, workout, coding: Extract ONLY if explicitly mentioned.
  */
 export const IngestStructuredSchema = z.object({
-    food: FoodSchema.optional(),
-    water: WaterSchema.optional(),
+    food: FoodSchema.describe("Food intake with macro estimation").optional(),
+    water: WaterSchema.describe("Water intake").optional(),
     workout: WorkoutSchema.optional().default({ didSession: false }),
+    sleep: SleepSchema.describe("Sleep duration and quality").optional(),
     productivityScore: z.number().min(0).max(10).describe("Self-assigned 0–10 productivity score").optional(),
     reading: ReadingSchema.optional().default({ didRead: false }),
     codingBuilding: CodingSchema.or(z.string()).optional().describe("Summary of coding/building"),

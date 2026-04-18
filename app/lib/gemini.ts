@@ -36,11 +36,12 @@ const schema = {
                                 calcium: { type: SchemaType.STRING },
                                 potassium: { type: SchemaType.STRING },
                                 magnesium: { type: SchemaType.STRING }
-                            }
+                            },
+                            required: ["proteinG", "carbsG", "fatsG", "fiberG"]
                         },
                         macroSummary: { type: SchemaType.STRING }
                     },
-                    required: ["description"]
+                    required: ["description", "macros", "macroSummary"]
                 },
                 water: {
                     type: SchemaType.OBJECT,
@@ -62,7 +63,7 @@ const schema = {
                                     label: { type: SchemaType.STRING },
                                     durationMin: { type: SchemaType.NUMBER }
                                 },
-                                required: ["label"]
+                                required: ["label", "durationMin"]
                             }
                         }
                     },
@@ -93,11 +94,13 @@ const schema = {
                         napHours: { type: SchemaType.NUMBER },
                         sleepQuality: { type: SchemaType.NUMBER },
                         notes: { type: SchemaType.STRING }
-                    }
+                    },
+                    required: ["mainSleepHours"]
                 },
                 habitsScore: { type: SchemaType.NUMBER },
                 screenTimeMinutes: { type: SchemaType.NUMBER }
-            }
+            },
+            required: ["food", "sleep", "water", "screenTimeMinutes", "productivityScore", "habitsScore"]
         },
         dailySummary: { type: SchemaType.STRING },
         ingestModel: { type: SchemaType.STRING }
@@ -122,19 +125,33 @@ You are a data extraction agent for Arete, a personal AI agent platform. Your jo
         - Connect the dots: if someone had high screen time but low productivity, mention it. If they ate well and worked out, note it.
         - AVOID: buzzwords like "journey," "protocol," "neural," "profound," "forged," "epoch," or flowery adjectives
 
-2.  **STRICT SCHEMA RULES:**
-    *   **Sleep:** Extract if mentioned. Include mainSleepHours (night sleep), napHours (daytime naps), and sleepQuality (1-10 subjective rating). If not explicitly mentioned, omit the entire sleep object.
-    *   **Food/Water:** Only include if explicitly mentioned. If food is logged, capture the "essence" of the description (e.g., "Salmon and greens" instead of just "Food").
-    *   **Food Macros (IF FOOD IS LOGGED):** Extract estimated macronutrients and key micronutrients based on the food description:
-        - **Macros (numbers):** proteinG, carbsG, fatsG, fiberG (estimate in grams based on typical portions)
-        - **Micros (text descriptions):** vitaminC, vitaminD, iron, calcium, potassium, magnesium (describe presence/amount, e.g., "Good source" or "Moderate amount")
-        - **macroSummary:** ONE sentence evaluating macro balance and what's needed. Examples:
-          * "High in protein and carbs but lacking healthy fats—consider adding nuts or avocado."
-          * "Good macro balance with solid micronutrient profile. Could use more iron-rich foods."
-          * "Carb-heavy meal with moderate protein—adding a protein source would improve balance."
-    *   **Scores (0-10):** If the user provides a score, use it. If they describe their productivity or habits state (e.g., "I felt super focused" or "I struggled to focus"), infer a score logically.
-    *   **Boolean Flags:** Be literal. If they didn't mention reading/coding/workout, assume 'didRead: false', etc., UNLESS the context implies it (e.g., "Finished 20 pages").
-    *   **Screen Time:** Extract total screen time in minutes if mentioned (e.g., "2 hours on phone" → 120 minutes). Sum multiple devices if listed separately. Omit field if not mentioned.
+2.  **EXTRACTION RULES (Be Thorough & Estimate):**
+    *   **Sleep (CRITICAL):** ALWAYS EXTRACT AND CALCULATE if ANY sleep times are mentioned. Parse time ranges and calculate hours:
+        - Example: "9:45PM to 7:50AM" = 10 hours 5 minutes = 10.08 mainSleepHours
+        - Example: "8:30PM to 9:20PM nap" = 50 minutes = 0.83 napHours
+        - sleepQuality: 1-10 rating (default 5 if not specified). REQUIRED FIELD.
+        - NEVER omit sleep if sleep times are mentioned.
+    *   **Food/Water (CRITICAL):** Extract ALL food items. For EACH item, estimate calories AND macros:
+        - Description: full list of all items eaten
+        - Macros: CALCULATE TOTAL for all foods combined using USDA/typical serving estimates:
+          * proteinG: sum of protein from all items (rotis ~3g each, paneer ~20g per serving, soya ~15g, etc.)
+          * carbsG: sum of carbs from all items (rotis ~40g each, baaflo ~60g, kheer ~20g, etc.)
+          * fatsG: sum of fats from all items (butter toast ~8g, cheese ~7g, ice cream ~12g, etc.)
+          * fiberG: sum of fiber from all items (soya ~5g, biscuit ~2g, etc.)
+        - macroSummary: ONE sentence analyzing total balance across ALL foods (e.g., "High in carbs (~180g) and protein (~50g) from rotis, paneer, and soya; moderate fat (~40g); good fiber from soya and biscuits")
+        - Water: ALWAYS extract amountMl (1.2L → 1200 mL)
+    *   **Scores (0-10):** ALWAYS extract if mentioned—productivityScore and habitsScore. Use exact numbers (e.g., "8/10 productivity" → 8).
+    *   **Workout (CRITICAL):** ALWAYS extract if ANY exercise is mentioned. Extract ALL sessions with:
+        - label: Exercise type (e.g., "Running", "Football", "Cycling", "Weight training")
+        - durationMin: CALCULATE duration from time ranges or extract from text:
+          * Example: "1.5 hrs football" → 90 durationMin
+          * Example: "8:30PM to 9:20PM football" → 50 durationMin
+          * Example: "60 min running at 6mph" → 60 durationMin
+        - If MULTIPLE exercises listed, create separate session entries for each
+        - NEVER omit duration—estimate if time range not explicit (e.g., "quick 10-min walk" → 10, "long gym session" → 60-90 estimated)
+        - Set didSession: true if any workout found, false if none mentioned
+    *   **Screen Time:** ALWAYS extract if mentioned (e.g., "59 minutes screentime" → 59). Calculate from time ranges (e.g., "8:30PM to 9:20PM" → 50 minutes).
+    *   **Boolean Flags:** Extract reading, codingBuilding ONLY if explicitly mentioned. Workout is handled above.
 
 3.  **AUTHORITY:**
     *   The dateKey provided in the system context is absolute.
